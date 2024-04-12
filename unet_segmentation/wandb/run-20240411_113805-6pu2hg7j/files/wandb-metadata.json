@@ -1,0 +1,145 @@
+{
+    "os": "Linux-5.15.0-43-generic-x86_64-with-glibc2.31",
+    "python": "3.12.1",
+    "heartbeatAt": "2024-04-11T16:38:07.325435",
+    "startedAt": "2024-04-11T16:38:05.702682",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "host": "masi-47.vuds.vanderbilt.edu",
+    "username": "rudravg",
+    "executable": "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/bin/python",
+    "cpu_count": 10,
+    "cpu_count_logical": 20,
+    "cpu_freq": {
+        "current": 3.5750000000000015,
+        "min": 1200.0,
+        "max": 4560.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1.286,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4700.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 937.3305015563965,
+            "used": 587.0289688110352
+        }
+    },
+    "gpu": "Quadro RTX 5000",
+    "gpu_count": 2,
+    "gpu_devices": [
+        {
+            "name": "Quadro RTX 5000",
+            "memory_total": 16908615680
+        },
+        {
+            "name": "NVIDIA T400 4GB",
+            "memory_total": 4093050880
+        }
+    ],
+    "memory": {
+        "total": 62.497623443603516
+    }
+}
