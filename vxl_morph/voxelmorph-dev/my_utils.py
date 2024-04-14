@@ -25,7 +25,8 @@ class Utils:
         ratios_in_bin = ratio[(ratio > start) & (ratio < end)]
         factor = ratios_in_bin.mean()
         adjusted_target_image = target_image * factor
-        return adjusted_target_image,factor
+        adjusted_target_image_new = np.minimum(adjusted_target_image, original_image.max())
+        return adjusted_target_image_new,factor
     @staticmethod
     def adjust_intensity_histogram(original_image, target_image):
         # Convert the images to float
@@ -92,13 +93,11 @@ class Utils:
         original_width=moving.shape[1]
         fixed_tissue = np.pad(original_tissue_masked, original_tissue_padding, mode='constant')
         moving_tissue = np.pad(fixed_masked, original_tissue_padding, mode='constant')
-        print(fixed_tissue.shape)
-        print(original_tissue_padding)
         return moving_tissue, fixed_tissue,original_height,original_width
     
     @staticmethod
     def load_model(model_path):
-        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
         model = vxm.networks.VxmDense.load(model_path, device)
         model.to(device)
         model.eval()
