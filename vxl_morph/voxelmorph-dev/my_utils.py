@@ -96,6 +96,24 @@ class Utils:
         return moving_tissue, fixed_tissue,original_height,original_width
     
     @staticmethod
+    def load_images_and_no_mask(moving, fixed, mask):
+        moving=np.array(Image.open(moving))
+        fixed=np.array(Image.open(fixed))
+        mask=np.array(Image.open(mask))
+        mask = (mask > 0).astype(int)
+        mask = mask/255.
+        moving_tissue_masked = moving /255.
+        fixed_tissue_masked = fixed /255.
+        #moving_tissue_masked = moving * mask
+        #fixed_tissue_masked = fixed * mask
+        original_tissue_padding = ((0, 512 - moving.shape[0] % 512), (0, 512 - moving.shape[1] % 512))
+        original_height=moving.shape[0]
+        original_width=moving.shape[1]
+        fixed_tissue = np.pad(fixed_tissue_masked, original_tissue_padding, mode='constant')
+        moving_tissue = np.pad(moving_tissue_masked, original_tissue_padding, mode='constant')
+        return moving_tissue, fixed_tissue,original_height,original_width
+        
+    @staticmethod
     def load_model(model_path):
         device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
         model = vxm.networks.VxmDense.load(model_path, device)
