@@ -9,7 +9,7 @@ os.environ['NEURITE_BACKEND'] = 'pytorch'
 os.environ['VXM_BACKEND'] = 'pytorch'
 import voxelmorph as vxm
 
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 model='/home-local/rudravg/test_DAPI/epochs/epoch_35/epoch_35.pth'
 best_model=vxm.networks.VxmDense.load(model, device)
 best_model.to(device)
@@ -80,6 +80,10 @@ original_tissue,target_tissue=load_and_mask(original_tissue,target_tissue,mask)
 reconstructed_tissue=registerTissues(original_tissue,target_tissue,best_model,device)
 orig_recon=calculate_ncc(original_tissue.ravel(),reconstructed_tissue.ravel())
 target_recon=calculate_ncc(target_tissue.ravel(),reconstructed_tissue.ravel())
+#Save the original, reconstructed and target tissues as tiff files
+Image.fromarray((original_tissue*255).astype(np.uint8)).save('/home-local/rudravg/test_DAPI/Registration_QA/GCA112TIA_masked/Apr14_tissue_reg_check/original_tissue.tif')
+Image.fromarray((reconstructed_tissue*255).astype(np.uint8)).save('/home-local/rudravg/test_DAPI/Registration_QA/GCA112TIA_masked/Apr14_tissue_reg_check/reconstructed_tissue.tif')
+Image.fromarray((target_tissue*255).astype(np.uint8)).save('/home-local/rudravg/test_DAPI/Registration_QA/GCA112TIA_masked/Apr14_tissue_reg_check/target_tissue.tif')
 
 print('NCC between original and reconstructed tissue:',orig_recon)
 print('NCC between target and reconstructed tissue:',target_recon)

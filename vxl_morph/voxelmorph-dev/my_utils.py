@@ -44,27 +44,27 @@ class Utils:
     @staticmethod
     def register_tissues(moving, fixed, model, device):
         block_size = (512, 512)
-        num_blocks_x = moving.shape[0] // block_size[0]
-        num_blocks_y = moving.shape[1] // block_size[1]
-        original_tissue_cropped = moving[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
-        fixed_cropped = fixed[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
-        original_tissue_blocks = view_as_blocks(original_tissue_cropped, block_shape=block_size)
-        fixed_blocks = view_as_blocks(fixed_cropped, block_shape=block_size)
+#        num_blocks_x = moving.shape[0] // block_size[0]
+#        num_blocks_y = moving.shape[1] // block_size[1]
+#        original_tissue_cropped = moving[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
+#        fixed_cropped = fixed[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
+        moving_tissue_blocks = view_as_blocks(moving, block_shape=block_size)
+        fixed_tissue_blocks = view_as_blocks(fixed, block_shape=block_size)
         pred_blocks_tissue = []
         pred_blocks_field=[]
 
-        for i in range(original_tissue_blocks.shape[0]):
+        for i in range(moving_tissue_blocks.shape[0]):
             row_blocks_tissues = []
             row_blocks_field = []
-            for j in range(original_tissue_blocks.shape[1]):
-                original_tissue_block = original_tissue_blocks[i, j]
-                fixed_block = fixed_blocks[i, j]
-                original_tissue_block = original_tissue_block[np.newaxis, ..., np.newaxis]
+            for j in range(moving_tissue_blocks.shape[1]):
+                moving_block = moving_tissue_blocks[i, j]
+                fixed_block = fixed_tissue_blocks[i, j]
+                moving_block = moving_block[np.newaxis, ..., np.newaxis]
                 fixed_block = fixed_block[np.newaxis, ..., np.newaxis]
-                original_tissue_block = torch.from_numpy(original_tissue_block).to(device).float().permute(0,3,1,2)
+                moving_block = torch.from_numpy(moving_block).to(device).float().permute(0,3,1,2)
                 fixed_block = torch.from_numpy(fixed_block).to(device).float().permute(0,3,1,2)
-                fwd_pred = model(fixed_block,original_tissue_block ,registration=True)
-                inv_pred = model(original_tissue_block,fixed_block, registration=True)
+                fwd_pred = model(moving_block,fixed_block ,registration=True)
+                inv_pred = model(fixed_block,moving_block, registration=True)
                 composite_field = Utils.combine_displacement_fields(fwd_pred[1].detach().cpu().numpy().squeeze(), inv_pred[1].detach().cpu().numpy().squeeze())
                 L2_norm_combined = np.sqrt(composite_field[0]**2 + composite_field[1]**2)
                 row_blocks_tissues.append(fwd_pred[0].detach().cpu().numpy())
@@ -84,15 +84,15 @@ class Utils:
         mask=np.array(Image.open(mask))
         mask = (mask > 0).astype(int)
         mask = mask/255.
-        #original_tissue_masked = moving /255.
-        #fixed_masked = fixed /255.
-        original_tissue_masked = moving * mask
-        fixed_masked = fixed * mask
+        #moving_tissue_masked = moving /255.
+        #fixed_tissue_masked = fixed /255.
+        moving_tissue_masked = moving * mask
+        fixed_tissue_masked = fixed * mask
         original_tissue_padding = ((0, 512 - moving.shape[0] % 512), (0, 512 - moving.shape[1] % 512))
         original_height=moving.shape[0]
         original_width=moving.shape[1]
-        fixed_tissue = np.pad(original_tissue_masked, original_tissue_padding, mode='constant')
-        moving_tissue = np.pad(fixed_masked, original_tissue_padding, mode='constant')
+        fixed_tissue = np.pad(fixed_tissue_masked, original_tissue_padding, mode='constant')
+        moving_tissue = np.pad(moving_tissue_masked, original_tissue_padding, mode='constant')
         return moving_tissue, fixed_tissue,original_height,original_width
     
     @staticmethod
