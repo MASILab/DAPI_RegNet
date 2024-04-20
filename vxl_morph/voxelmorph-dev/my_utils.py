@@ -10,6 +10,7 @@ os.environ['VXM_BACKEND'] = 'pytorch'
 import voxelmorph as vxm
 from scipy.ndimage import map_coordinates
 from skimage import exposure
+Image.MAX_IMAGE_PIXELS = None
 
 
 class Utils:
@@ -151,6 +152,106 @@ class Utils:
         D_combined[1] = D1[1] + D2_y_interpolated
         
         return D_combined
+    
+class AllStainUtils:
+    @staticmethod
+    def load_all_stains_and_dapi(dapi_r0,dapi_rx,stain1,stain2,stain3,mask):
+        """
+        This function does 3 things. Load the images, downscale them to be the same size as the mask and apply the mask.
+        """
+        # Load the images
+        dapi_r0 = Image.open(dapi_r0)
+        dapi_rx = Image.open(dapi_rx)
+        stain1 = Image.open(stain1)
+        stain2 = Image.open(stain2)
+        stain3 = Image.open(stain3)
+        mask = Image.open(mask)
+
+        # Resize the images to be the same size as the mask
+        dapi_r0 = dapi_r0.resize(mask.size)
+        dapi_rx = dapi_rx.resize(mask.size)
+        stain1 = stain1.resize(mask.size)
+        stain2 = stain2.resize(mask.size)
+        stain3 = stain3.resize(mask.size)
+
+        # Convert images to numpy arrays
+        dapi_r0 = np.array(dapi_r0)
+        dapi_rx = np.array(dapi_rx)
+        stain1 = np.array(stain1)
+        stain2 = np.array(stain2)
+        stain3 = np.array(stain3)
+        mask = np.array(mask)
+        print(np.unique(mask))
+
+        # Apply the mask
+        mask = (mask > 0).astype(int)
+        print(np.unique(mask))
+        dapi_r0 = (dapi_r0 * mask)/255.
+        dapi_rx = (dapi_rx * mask)/255.
+        stain1 = (stain1 * mask)/255.
+        stain2 = (stain2 * mask)/255.
+        stain3 = (stain3 * mask)/255.
+
+        return dapi_r0, dapi_rx, stain1, stain2, stain3, mask
+
+    
+    def do_registration(moving_img, fixed,stain1,stain2,stain3, model, device):
+        """
+        This function does the registration of the moving image to the fixed image using the model provided. It also
+        applies the same registratin to the stains provided.
+        """
+        block_size = (512, 512)
+        moving_tissue_blocks = view_as_blocks(moving_img, block_shape=block_size)
+        fixed_tissue_blocks = view_as_blocks(fixed, block_shape=block_size)
+        stain1= view_as_blocks(stain1, block_shape=block_size)
+        stain2= view_as_blocks(stain2, block_shape=block_size)
+        stain3= view_as_blocks(stain3, block_shape=block_size)
+        pred_blocks_tissue = []
+        pred_blocks_stain1=[]
+        pred_blocks_stain2=[]
+        pred_blocks_stain3=[]
+
+        for i in range(moving_tissue_blocks.shape[0]):
+            row_blocks_tissues = []
+            row_blocks_stain1 = []
+            row_blocks_stain2 = []
+            row_blocks_stain3 = []
+
+            for j in range(moving_tissue_blocks.shape[1]):
+                moving_block = moving_tissue_blocks[i, j]
+                fixed_block = fixed_tissue_blocks[i, j]
+                stain1_block = stain1[i,j]
+                stain2_block = stain2[i,j]
+                stain3_block = stain3[i,j]
+
+                moving_block = moving_block[np.newaxis, ..., np.newaxis]
+                fixed_block = fixed_block[np.newaxis, ..., np.newaxis]
+                stain1_block = stain1_block[np.newaxis, ..., np.newaxis]
+                stain2_block = stain2_block[np.newaxis, ..., np.newaxis]
+                stain3_block = stain3_block[np.newaxis, ..., np.newaxis]
+
+                moving_block = torch.from_numpy(moving_block).to(device).float().permute(0,3,1,2)
+                fixed_block = torch.from_numpy(fixed_block).to(device).float().permute(0,3,1,2)
+                stain1_block = torch.from_numpy(stain1_block).to(device).float().permute(0,3,1,2)
+                stain2_block = torch.from_numpy(stain2_block).to(device).float().permute(0,3,1,2)
+                stain3_block = torch.from_numpy(stain3_block).to(device).float().permute(0,3,1,2)
+
+                fwd_pred,fwd_pred_field = model(moving_block,fixed_block ,registration=True)
+                fwd_pred_field = fwd_pred_field.detach().cpu().numpy()
+
+                stain1_pred=model.transformer(stain1_block,fwd_predp2,registration=True)
+
+                row_blocks_tissues.append(fwd_pred.detach().cpu().numpy())
+            pred_blocks_tissue.append(row_blocks_tissues)
+
+        reconstructed_tissue = np.block(pred_blocks_tissue)
+        composed_warp = np.block(pred_blocks_field)
+        reconstructed_tissue = reconstructed_tissue.squeeze().squeeze()
+        return reconstructed_tissue,composed_warp
+
+
+
+
     
 
     
