@@ -194,18 +194,25 @@ class AllStainUtils:
 
         return dapi_r0, dapi_rx, stain1, stain2, stain3, mask
 
-    
+    @staticmethod
     def do_registration(moving_img, fixed,stain1,stain2,stain3, model, device):
         """
         This function does the registration of the moving image to the fixed image using the model provided. It also
         applies the same registratin to the stains provided.
         """
         block_size = (512, 512)
-        moving_tissue_blocks = view_as_blocks(moving_img, block_shape=block_size)
+        num_blocks_x = moving_img.shape[0] // block_size[0]
+        num_blocks_y = moving_img.shape[1] // block_size[1]
+        moving= moving_img[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
+        fixed= fixed[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
+        stain1= stain1[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
+        stain2= stain2[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
+        stain3= stain3[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
+        moving_tissue_blocks = view_as_blocks(moving, block_shape=block_size)
         fixed_tissue_blocks = view_as_blocks(fixed, block_shape=block_size)
-        stain1= view_as_blocks(stain1, block_shape=block_size)
-        stain2= view_as_blocks(stain2, block_shape=block_size)
-        stain3= view_as_blocks(stain3, block_shape=block_size)
+        stain1_blocks= view_as_blocks(stain1, block_shape=block_size)
+        stain2_blocks= view_as_blocks(stain2, block_shape=block_size)
+        stain3_blocks= view_as_blocks(stain3, block_shape=block_size)
         pred_blocks_tissue = []
         pred_blocks_stain1=[]
         pred_blocks_stain2=[]
@@ -220,9 +227,9 @@ class AllStainUtils:
             for j in range(moving_tissue_blocks.shape[1]):
                 moving_block = moving_tissue_blocks[i, j]
                 fixed_block = fixed_tissue_blocks[i, j]
-                stain1_block = stain1[i,j]
-                stain2_block = stain2[i,j]
-                stain3_block = stain3[i,j]
+                stain1_block = stain1_blocks[i,j]
+                stain2_block = stain2_blocks[i,j]
+                stain3_block = stain3_blocks[i,j]
 
                 moving_block = moving_block[np.newaxis, ..., np.newaxis]
                 fixed_block = fixed_block[np.newaxis, ..., np.newaxis]
@@ -237,17 +244,31 @@ class AllStainUtils:
                 stain3_block = torch.from_numpy(stain3_block).to(device).float().permute(0,3,1,2)
 
                 fwd_pred,fwd_pred_field = model(moving_block,fixed_block ,registration=True)
-                fwd_pred_field = fwd_pred_field.detach().cpu().numpy()
-
-                stain1_pred=model.transformer(stain1_block,fwd_predp2,registration=True)
+                stain1_pred=model.transformer(stain1_block,fwd_pred_field)
+                stain2_pred=model.transformer(stain2_block,fwd_pred_field)
+                stain3_pred=model.transformer(stain3_block,fwd_pred_field)
 
                 row_blocks_tissues.append(fwd_pred.detach().cpu().numpy())
+                row_blocks_stain1.append(stain1_pred.detach().cpu().numpy())
+                row_blocks_stain2.append(stain2_pred.detach().cpu().numpy())
+                row_blocks_stain3.append(stain3_pred.detach().cpu().numpy())
+
             pred_blocks_tissue.append(row_blocks_tissues)
+            pred_blocks_stain1.append(row_blocks_stain1)
+            pred_blocks_stain2.append(row_blocks_stain2)
+            pred_blocks_stain3.append(row_blocks_stain3)
 
         reconstructed_tissue = np.block(pred_blocks_tissue)
-        composed_warp = np.block(pred_blocks_field)
+        reconstructed_stain1 = np.block(pred_blocks_stain1)
+        reconstructed_stain2 = np.block(pred_blocks_stain2)
+        reconstructed_stain3 = np.block(pred_blocks_stain3)
+
         reconstructed_tissue = reconstructed_tissue.squeeze().squeeze()
-        return reconstructed_tissue,composed_warp
+        reconstructed_stain1 = reconstructed_stain1.squeeze().squeeze()
+        reconstructed_stain2 = reconstructed_stain2.squeeze().squeeze()
+        reconstructed_stain3 = reconstructed_stain3.squeeze().squeeze()
+
+        return reconstructed_tissue, reconstructed_stain1, reconstructed_stain2, reconstructed_stain3
 
 
 
