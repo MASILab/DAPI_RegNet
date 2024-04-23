@@ -1,3 +1,5 @@
+import wandb
+wandb.login()
 import torch
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
@@ -72,8 +74,21 @@ best_val_loss = float('inf')
 patience = 50
 epochs_no_improve = 0
 
+run = wandb.init(
 
-##Training the model
+    project="Voxelmorph_1024_Images",
+
+    config={
+        "learning_rate": 0.001,
+        "epochs": 500,
+        "Loss fn": "NCC, L2_norm",
+        "Optimizer":"Adam",
+        "NCC Hyperparameters":1,
+        "L2_norm Hyperparameters":0.01,
+        "Batch Size":5
+    },
+)
+
 for epoch in range(500):
     ########### Training ###########
     model.train()
@@ -97,6 +112,8 @@ for epoch in range(500):
         loss.backward()
         optimizer.step()
     epoch_loss_final.append(np.mean(epoch_total_loss))
+
+    mean_epoch_loss = np.mean(epoch_loss, axis=0)
 
     ########### Inference ###########
     with torch.inference_mode():
@@ -127,7 +144,7 @@ for epoch in range(500):
             plt.title('Registered Image')
             plt.savefig(os.path.join(epoch_dir, f'pair_{i}.png'))  # Save the plot as an image
             plt.close()
-        epoch_val_loss_final.append(np.mean(val_loss))
+        epoch_val_loss_final.append(np.mean(val_loss))       # ... rest of your code ...
     mean_val_loss = np.mean(val_loss)
     if mean_val_loss < best_val_loss:
         best_val_loss = mean_val_loss
@@ -137,8 +154,18 @@ for epoch in range(500):
     if epochs_no_improve == patience:
         print(f'Early stopping on epoch {epoch}')
         break
+
+    # Log the mean total loss, mean validation loss, and mean individual losses
+    wandb.log({
+        "Epoch": epoch, 
+        "Train Loss": np.mean(epoch_total_loss), 
+        "Val Loss": np.mean(val_loss),
+        "Dice Loss": mean_epoch_loss[0],
+        "Smoothness Loss": mean_epoch_loss[1]
+    })
+
     print('------------------------------------------------------')
     print(f'Epoch: {epoch} Loss: {np.mean(epoch_total_loss)}')
     print(f'Epoch {epoch} Val Loss: {np.mean(val_loss)}')
-    print(f'Epoch {epoch} Losses: {np.mean(epoch_loss, axis=0)}')
+    print(f'Epoch {epoch} Losses: {mean_epoch_loss}')
     print('------------------------------------------------------')

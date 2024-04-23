@@ -1,0 +1,152 @@
+{
+    "os": "Linux-5.15.0-43-generic-x86_64-with-glibc2.31",
+    "python": "3.12.1",
+    "heartbeatAt": "2024-04-23T21:54:55.273815",
+    "startedAt": "2024-04-23T21:54:48.938443",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/003_train_1024_.py",
+    "codePathLocal": "003_train_1024_.py",
+    "codePath": "vxl_morph/voxelmorph-dev/003_train_1024_.py",
+    "git": {
+        "remote": "git@github.com:MASILab/DAPI_RegSegNet.git",
+        "commit": "e9e0a2bac4232dd6144bee18b277e5cddb7cdb1f"
+    },
+    "email": "gaurav.rudravaram@gmail.com",
+    "root": "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet",
+    "host": "masi-47.vuds.vanderbilt.edu",
+    "username": "rudravg",
+    "executable": "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/bin/python",
+    "cpu_count": 10,
+    "cpu_count_logical": 20,
+    "cpu_freq": {
+        "current": 3.5750000000000015,
+        "min": 1200.0,
+        "max": 4560.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1.2,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 1.763,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.7,
+            "min": 1200.0,
+            "max": 4700.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 937.3305015563965,
+            "used": 694.0875625610352
+        }
+    },
+    "gpu": "Quadro RTX 5000",
+    "gpu_count": 2,
+    "gpu_devices": [
+        {
+            "name": "Quadro RTX 5000",
+            "memory_total": 16908615680
+        },
+        {
+            "name": "NVIDIA T400 4GB",
+            "memory_total": 4093050880
+        }
+    ],
+    "memory": {
+        "total": 62.497623443603516
+    }
+}
