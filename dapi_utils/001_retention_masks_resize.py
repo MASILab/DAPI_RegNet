@@ -19,7 +19,8 @@ for line in tqdm(lines):
     else:
         sub_name=(line.split('/')[4].split('_')[0])
         sub_tissue_name=sub_name
-    set_dir=f'/fs5/p_masi/baos1/rudravg/MXIF/MXIF/Helmsley/MxIF/Set03/{sub_name}/Registered'
+    set_name=line.split('/')[1]
+    set_dir=f'/fs5/p_masi/baos1/rudravg/MXIF/MXIF/Helmsley/MxIF/{set_name}/{sub_name}/Registered'
     matching_files = [name for name in os.listdir(retention_dir) if sub_tissue_name in name]
     if not matching_files:
         print(f"No mask files for subject {sub_tissue_name}")
