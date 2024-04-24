@@ -1,0 +1,149 @@
+------------------------------------------------------
+Epoch: 0 Loss: -0.1552573788325794
+Epoch 0 Val Loss: -0.1623688830785822
+Epoch 0 Losses: [-1.55257680e-01  3.00446582e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 1 Loss: -0.161047801792544
+Epoch 1 Val Loss: -0.16254833544117345
+Epoch 1 Losses: [-1.61048144e-01  3.41850397e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 2 Loss: -0.15393437662795703
+Epoch 2 Val Loss: -0.16122335861340953
+Epoch 2 Losses: [-1.53934700e-01  3.23246226e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 3 Loss: -0.1554670784470444
+Epoch 3 Val Loss: -0.16154246745479645
+Epoch 3 Losses: [-1.55467368e-01  2.89223677e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 4 Loss: -0.15676027307442078
+Epoch 4 Val Loss: -0.16522598573039465
+Epoch 4 Losses: [-1.56760556e-01  2.82895047e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 5 Loss: -0.15904141505921465
+Epoch 5 Val Loss: -0.16739252466102045
+Epoch 5 Losses: [-1.59041718e-01  3.03433890e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 6 Loss: -0.1670774164344443
+Epoch 6 Val Loss: -0.19440733201466093
+Epoch 6 Losses: [-1.6707779e-01  3.7309604e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 7 Loss: -0.1846570256554211
+Epoch 7 Val Loss: -0.19304739593118356
+Epoch 7 Losses: [-1.84657533e-01  5.07544553e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 8 Loss: -0.17397592218346997
+Epoch 8 Val Loss: -0.17795473051028768
+Epoch 8 Losses: [-1.73976375e-01  4.52714709e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 9 Loss: -0.19109320527705778
+Epoch 9 Val Loss: -0.21197055709317017
+Epoch 9 Losses: [-1.91093751e-01  5.46187114e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 10 Loss: -0.18883773599130413
+Epoch 10 Val Loss: -0.15471366083391297
+Epoch 10 Losses: [-1.88838302e-01  5.65957671e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 11 Loss: -0.15886029210054808
+Epoch 11 Val Loss: -0.18838857432083653
+Epoch 11 Losses: [-1.58860612e-01  3.19487203e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 12 Loss: -0.17308151792773666
+Epoch 12 Val Loss: -0.20577805074388433
+Epoch 12 Losses: [-1.73081929e-01  4.10689553e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 13 Loss: -0.1575209552861957
+Epoch 13 Val Loss: -0.16625304885764688
+Epoch 13 Losses: [-1.57521375e-01  4.20448855e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 14 Loss: -0.17503645428870288
+Epoch 14 Val Loss: -0.1854006837646859
+Epoch 14 Losses: [-1.75036896e-01  4.41171290e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 15 Loss: -0.19025917844717494
+Epoch 15 Val Loss: -0.21649377375426623
+Epoch 15 Losses: [-1.90259680e-01  5.02167706e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 16 Loss: -0.1716831322151443
+Epoch 16 Val Loss: -0.15173425293274367
+Epoch 16 Losses: [-1.71683607e-01  4.74705329e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 17 Loss: -0.18141787653763053
+Epoch 17 Val Loss: -0.20406644770823335
+Epoch 17 Losses: [-1.81418356e-01  4.78824998e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 18 Loss: -0.20019611719504204
+Epoch 18 Val Loss: -0.2279047176483253
+Epoch 18 Losses: [-2.00196665e-01  5.48060943e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 19 Loss: -0.16884591473758015
+Epoch 19 Val Loss: -0.16470967344312423
+Epoch 19 Losses: [-1.68846405e-01  4.90510625e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 20 Loss: -0.17318259301343156
+Epoch 20 Val Loss: -0.20606809079554383
+Epoch 20 Losses: [-1.73183018e-01  4.25316715e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 21 Loss: -0.04992330841375608
+Epoch 21 Val Loss: 0.0
+Epoch 21 Losses: [-4.99234667e-02  1.58450857e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 22 Loss: 0.0
+Epoch 22 Val Loss: 0.0
+Epoch 22 Losses: [0. 0.]
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/003_train_1024_.py", line 103, in <module>
+    y_pred=model(*inputs)
+           ^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/voxelmorph/torch/networks.py", line 282, in forward
+    pos_flow = self.integrate(pos_flow)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/voxelmorph/torch/layers.py", line 67, in forward
+    vec = vec + self.transformer(vec, vec)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/voxelmorph/torch/layers.py", line 48, in forward
+    return nnf.grid_sample(src, new_locs, align_corners=True, mode=self.mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/torch/nn/functional.py", line 4178, in grid_sample
+    def grid_sample(
+KeyboardInterrupt

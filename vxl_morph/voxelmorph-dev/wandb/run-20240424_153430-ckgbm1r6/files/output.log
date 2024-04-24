@@ -1,0 +1,54 @@
+------------------------------------------------------
+Epoch: 0 Loss: -0.1538176342308159
+Epoch 0 Val Loss: -0.16220373740177874
+Epoch 0 Losses: [-0.15415305  0.00033542]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 1 Loss: -0.15382390090639497
+Epoch 1 Val Loss: -0.16221921993741648
+Epoch 1 Losses: [-0.15415898  0.00033508]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 2 Loss: -0.15382810798635344
+Epoch 2 Val Loss: -0.16223718528805336
+Epoch 2 Losses: [-0.15416279  0.00033469]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 3 Loss: -0.15383347163959923
+Epoch 3 Val Loss: -0.16224649140031475
+Epoch 3 Losses: [-0.15416779  0.00033432]
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/003_train_1024_.py", line 146, in <module>
+    plt.savefig(os.path.join(epoch_dir, f'pair_{i}.png'))  # Save the plot as an image
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/pyplot.py", line 1119, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/figure.py", line 3390, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/backend_bases.py", line 2193, in print_figure
+    result = print_method(
+             ^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/backend_bases.py", line 2043, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+                                                                 ^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/backends/backend_agg.py", line 497, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/backends/backend_agg.py", line 445, in _print_pil
+    FigureCanvasAgg.draw(self)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/backends/backend_agg.py", line 386, in draw
+    with (self.toolbar._wait_cursor_for_draw_cm() if self.toolbar
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/backend_bases.py", line 2947, in _wait_cursor_for_draw_cm
+    self.canvas.set_cursor(tools.Cursors.WAIT)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/backends/_backend_tk.py", line 437, in set_cursor
+    self._tkcanvas.configure(cursor=cursord[cursor])
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/tkinter/__init__.py", line 1716, in configure
+    return self._configure('configure', cnf, kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/tkinter/__init__.py", line 1706, in _configure
+    self.tk.call(_flatten((self._w, cmd)) + self._options(cnf))
+KeyboardInterrupt

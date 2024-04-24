@@ -41,10 +41,10 @@ class ImageRegistrationDataset(Dataset):
 
 
 ##Create the dataset and dataloader
-train_dataset = ImageRegistrationDataset('/home-local/rudravg/test_DAPI/1024_Dataset/train_pairs.txt')
-val_dataset = ImageRegistrationDataset('/home-local/rudravg/test_DAPI/1024_Dataset/val_pairs.txt')
-train_data_loader = DataLoader(train_dataset, batch_size=5, shuffle=True)
-val_data_loader = DataLoader(val_dataset, batch_size=5, shuffle=True)
+train_dataset = ImageRegistrationDataset('/home-local/rudravg/test_DAPI/1024_Dataset_V2/pairs.txt')
+val_dataset = ImageRegistrationDataset('/home-local/rudravg/test_DAPI/1024_Dataset_V2/val_pairs.txt')
+train_data_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+val_data_loader = DataLoader(val_dataset, batch_size=1, shuffle=True)
 
 # Define the model
 IN_SHAPE=(1024,1024)
@@ -56,7 +56,7 @@ else:
     device = torch.device('cpu')
 model.to(device)
 model.train()
-optimizer=torch.optim.Adam(model.parameters(), lr=1e-3)
+optimizer=torch.optim.Adam(model.parameters(), lr=0.001)
 
 # Define the loss function
 image_loss_func=vxm.losses.NCC().loss 
@@ -64,28 +64,29 @@ losses=[image_loss_func]
 weights=[1]
 
 losses += [vxm.losses.Grad('l2',loss_mult=2).loss]
-weights += [0.01]
+weights += [0.001]
 
 
 epoch_loss_final=[]
 epoch_val_loss_final=[]
-inference_dir='/home-local/rudravg/test_DAPI/1024_Dataset/epochs/'
+inference_dir='/home-local/rudravg/test_DAPI/1024_Dataset_V2/trial2_epochs/'
 best_val_loss = float('inf')
 patience = 50
 epochs_no_improve = 0
 
 run = wandb.init(
-
-    project="Voxelmorph_1024_Images",
-
+    project="Voxelmorph_1024_Images",   
+    name="WSize_32_Denom_1e-2",
     config={
         "learning_rate": 0.001,
         "epochs": 500,
-        "Loss fn": "NCC, L2_norm",
+        "Loss fn": "my_NCC, L2_norm",
         "Optimizer":"Adam",
         "NCC Hyperparameters":1,
-        "L2_norm Hyperparameters":0.01,
-        "Batch Size":5
+        "L2_norm Hyperparameters":0.001,
+        "Batch Size":4,
+        "NCC_Win_Size":32,
+        "NCC denominator":1e-2
     },
 )
 
@@ -160,7 +161,7 @@ for epoch in range(500):
         "Epoch": epoch, 
         "Train Loss": np.mean(epoch_total_loss), 
         "Val Loss": np.mean(val_loss),
-        "Dice Loss": mean_epoch_loss[0],
+        "NCC Loss": mean_epoch_loss[0],
         "Smoothness Loss": mean_epoch_loss[1]
     })
 

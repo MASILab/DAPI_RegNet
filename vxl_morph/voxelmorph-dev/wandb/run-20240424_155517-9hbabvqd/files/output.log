@@ -1,0 +1,61 @@
+------------------------------------------------------
+Epoch: 0 Loss: -0.15446893618597338
+Epoch 0 Val Loss: -0.1631617049007898
+Epoch 0 Losses: [-1.54469252e-01  3.16378189e-07]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 1 Loss: -0.15464456579259908
+Epoch 1 Val Loss: -0.16305655067435068
+Epoch 1 Losses: [-1.54644866e-01  3.00953365e-07]
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/003_train_1024_.py", line 143, in <module>
+    plt.subplot(1, 3, 3)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/pyplot.py", line 1437, in subplot
+    ax = fig.add_subplot(*args, **kwargs)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/figure.py", line 782, in add_subplot
+    ax = projection_class(self, *args, **pkw)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axes/_base.py", line 678, in __init__
+    self.clear()
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axes/_base.py", line 1388, in clear
+    self.__clear()
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axes/_base.py", line 1356, in __clear
+    self.yaxis.set_clip_path(self.patch)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/_api/deprecation.py", line 297, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axis.py", line 1111, in set_clip_path
+    for child in self.majorTicks + self.minorTicks:
+                                   ^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axis.py", line 591, in __get__
+    tick = instance._get_tick(major=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axis.py", line 1562, in _get_tick
+    return self._tick_class(self.axes, 0, major=major, **tick_kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axis.py", line 470, in __init__
+    super().__init__(*args, **kwargs)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axis.py", line 182, in __init__
+    self.label2 = mtext.Text(
+                  ^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/text.py", line 155, in __init__
+    self.update(kwargs)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/text.py", line 205, in update
+    ret.extend(super().update(kwargs))
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/artist.py", line 1209, in update
+    return self._update_props(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/artist.py", line 1195, in _update_props
+    ret.append(func(v))
+               ^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/artist.py", line 1053, in set_visible
+    self.pchanged()
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/artist.py", line 427, in pchanged
+    self._callbacks.process("pchanged")
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/cbook.py", line 294, in process
+    for ref in list(self.callbacks.get(s, {}).values()):
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

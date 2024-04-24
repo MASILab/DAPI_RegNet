@@ -23,7 +23,7 @@ class NCC:
         assert ndims in [1, 2, 3], "volumes should be 1 to 3 dimensions. found: %d" % ndims
 
         # set window size
-        win = [9] * ndims if self.win is None else self.win
+        win = [32] * ndims if self.win is None else self.win
 
         # compute filters
         sum_filt = torch.ones([1, 1, *win]).to("cuda")
@@ -62,7 +62,7 @@ class NCC:
         I_var = I2_sum - 2 * u_I * I_sum + u_I * u_I * win_size
         J_var = J2_sum - 2 * u_J * J_sum + u_J * u_J * win_size
 
-        cc = cross * cross / (I_var * J_var + 1e-5)
+        cc = cross * cross / (I_var * J_var + 1e-2)
 
         return -torch.mean(cc)
 
@@ -133,60 +133,43 @@ class Grad:
             grad *= self.loss_mult
 
         return grad.mean()
-class NMI:
+class my_NCC:
     """
-    Local (over window) normalized mutual information loss.
+    Global normalized cross correlation loss.
     """
 
-    def __init__(self, bin_centers, sigma_ratio=0.5, epsilon=1e-5):
-        """
-        :param bin_centers: A tensor of shape [num_bins] that represents the center of each histogram bin.
-        :param sigma_ratio: The ratio of the standard deviation to the mean for the Gaussian window used in density estimation.
-        :param epsilon: A small value to avoid division by zero.
-        """
-        self.bin_centers = bin_centers
-        self.sigma_ratio = sigma_ratio
-        self.epsilon = epsilon
-
-    def compute_histogram(self, x, bin_centers, sigma):
-        """
-        Computes the smoothed histogram for a batch of images or volumes.
-        :param x: The input tensor of shape [batch_size, *vol_shape, nb_feats].
-        :param bin_centers: The centers of the histogram bins.
-        :param sigma: The standard deviation for the Gaussian window.
-        :return: A tensor representing the smoothed histogram of the input.
-        """
-        x_flat = x.flatten(start_dim=1)  # Flatten the spatial dimensions
-        dists = (x_flat.unsqueeze(2) - bin_centers.unsqueeze(0).unsqueeze(0))**2  # Compute the squared distances
-        kernel_vals = torch.exp(-0.5 * dists / (sigma**2))  # Apply Gaussian kernel
-        histogram = kernel_vals.sum(dim=1) / x_flat.size(1)  # Sum over the flattened spatial dimensions
-        return histogram
+    def __init__(self):
+        pass
 
     def loss(self, y_true, y_pred):
-        """
-        Computes the normalized mutual information loss.
-        :param y_true: The ground truth tensor.
-        :param y_pred: The predicted tensor.
-        :return: The NMI loss value.
-        """
-        sigma = self.sigma_ratio * (self.bin_centers[1] - self.bin_centers[0])
-        true_hist = self.compute_histogram(y_true, self.bin_centers, sigma)
-        pred_hist = self.compute_histogram(y_pred, self.bin_centers, sigma)
 
-        # Compute joint histogram
-        joint_hist = torch.einsum('bi,bj->bij', true_hist, pred_hist)
-        joint_hist /= joint_hist.sum() + self.epsilon  # Normalize the joint histogram
+        Ii = y_true
+        Ji = y_pred
 
-        # Compute marginal histograms
-        true_marginal = true_hist.sum(dim=0) + self.epsilon
-        pred_marginal = pred_hist.sum(dim=0) + self.epsilon
+        # get dimension of volume
+        # assumes Ii, Ji are sized [batch_size, *vol_shape, nb_feats]
+        ndims = len(list(Ii.size())) - 2
+        assert ndims in [1, 2, 3], "volumes should be 1 to 3 dimensions. found: %d" % ndims
 
-        # Compute entropies
-        joint_entropy = -torch.sum(joint_hist * torch.log(joint_hist + self.epsilon))
-        true_entropy = -torch.sum(true_marginal * torch.log(true_marginal))
-        pred_entropy = -torch.sum(pred_marginal * torch.log(pred_marginal))
+        # compute CC squares
+        I2 = Ii * Ii
+        J2 = Ji * Ji
+        IJ = Ii * Ji
 
-        # Compute NMI
-        nmi = (true_entropy + pred_entropy) / joint_entropy
+        I_sum = torch.sum(Ii)
+        J_sum = torch.sum(Ji)
+        I2_sum = torch.sum(I2)
+        J2_sum = torch.sum(J2)
+        IJ_sum = torch.sum(IJ)
 
-        return -nmi  # Return negative NMI as a loss to minimize
+        # calculate means
+        u_I = I_sum / torch.numel(Ii)
+        u_J = J_sum / torch.numel(Ji)
+
+        cross = IJ_sum - u_J * I_sum - u_I * J_sum + u_I * u_J * torch.numel(Ii)
+        I_var = I2_sum - 2 * u_I * I_sum + u_I * u_I * torch.numel(Ii)
+        J_var = J2_sum - 2 * u_J * J_sum + u_J * u_J * torch.numel(Ji)
+
+        cc = cross * cross / (I_var * J_var + 1e-5)
+
+        return -torch.mean(cc)

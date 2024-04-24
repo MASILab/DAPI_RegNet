@@ -1,0 +1,15 @@
+------------------------------------------------------
+Epoch: 0 Loss: -0.5088841056244241
+Epoch 0 Val Loss: -0.5490287994035887
+Epoch 0 Losses: [-0.50977226  0.00088815]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 1 Loss: -0.33686894776141013
+Epoch 1 Val Loss: -0.1299316071299384
+Epoch 1 Losses: [-0.33804512  0.00117617]
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/003_train_1024_.py", line 100, in <module>
+    inputs = [i.to(device) for i in inputs]
+              ^^^^^^^^^^^^
+KeyboardInterrupt

@@ -1,0 +1,85 @@
+------------------------------------------------------
+Epoch: 0 Loss: -0.12627171784697566
+Epoch 0 Val Loss: -0.13157384383923926
+Epoch 0 Losses: [-1.2627480e-01  3.0816797e-06]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 1 Loss: -0.12788964688176443
+Epoch 1 Val Loss: -0.13304016470823785
+Epoch 1 Losses: [-1.27892664e-01  3.01693816e-06]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 2 Loss: -0.1289194698135058
+Epoch 2 Val Loss: -0.1361514836612205
+Epoch 2 Losses: [-1.28922499e-01  3.02972899e-06]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 3 Loss: -0.1347430270301023
+Epoch 3 Val Loss: -0.13397789996547413
+Epoch 3 Losses: [-1.34746600e-01  3.57270425e-06]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 4 Loss: -0.13837697505490118
+Epoch 4 Val Loss: -0.15981286582782825
+Epoch 4 Losses: [-1.38380529e-01  3.55395392e-06]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 5 Loss: -0.13402819436224592
+Epoch 5 Val Loss: -0.14242042111196426
+Epoch 5 Losses: [-1.34031914e-01  3.71935799e-06]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 6 Loss: -0.14656169813436767
+Epoch 6 Val Loss: -0.1691919653655258
+Epoch 6 Losses: [-1.46565603e-01  3.90525790e-06]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 7 Loss: -0.1111517341232684
+Epoch 7 Val Loss: -0.00010719942170437564
+Epoch 7 Losses: [-1.11157769e-01  6.03512401e-06]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 8 Loss: -3.087495092872476e-06
+Epoch 8 Val Loss: -1.2340894518540378e-06
+Epoch 8 Losses: [-3.09022840e-06  2.73332963e-09]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 9 Loss: -1.1606429424452599e-06
+Epoch 9 Val Loss: -8.583962646447902e-07
+Epoch 9 Losses: [-1.16067319e-06  3.02488423e-11]
+------------------------------------------------------
+------------------------------------------------------
+Epoch: 10 Loss: -1.0337962055212934e-06
+Epoch 10 Val Loss: -5.246336239093499e-07
+Epoch 10 Losses: [-1.03385093e-06  5.47091372e-11]
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/003_train_1024_.py", line 136, in <module>
+    plt.subplot(1, 3, 1)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/pyplot.py", line 1437, in subplot
+    ax = fig.add_subplot(*args, **kwargs)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/figure.py", line 782, in add_subplot
+    ax = projection_class(self, *args, **pkw)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axes/_base.py", line 667, in __init__
+    self.spines = mspines.Spines.from_dict(self._gen_axes_spines())
+                                           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/axes/_base.py", line 1213, in _gen_axes_spines
+    return {side: mspines.Spine.linear_spine(self, side)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/spines.py", line 446, in linear_spine
+    result = cls(axes, spine_type, path, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/spines.py", line 54, in __init__
+    super().__init__(**kwargs)
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/patches.py", line 74, in __init__
+    self._hatch_color = colors.to_rgba(mpl.rcParams['hatch.color'])
+                                       ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/__init__.py", line 762, in __getitem__
+    return self._get(key)
+           ^^^^^^^^^^^^^^
+  File "/home/local/VANDERBILT/rudravg/miniconda3/envs/dapi_reg/lib/python3.12/site-packages/matplotlib/__init__.py", line 709, in _get
+    return dict.__getitem__(self, key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

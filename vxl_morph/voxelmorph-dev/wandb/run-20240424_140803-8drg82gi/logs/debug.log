@@ -1,0 +1,27 @@
+2024-04-24 14:08:04,291 INFO    MainThread:1394211 [wandb_setup.py:_flush():76] Current SDK version is 0.16.6
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_setup.py:_flush():76] Configure stats pid to 1394211
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_setup.py:_flush():76] Loading settings from /home/local/VANDERBILT/rudravg/.config/wandb/settings
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_setup.py:_flush():76] Loading settings from /nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/wandb/settings
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'vxl_morph/voxelmorph-dev/003_train_1024_.py', 'program_abspath': '/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/003_train_1024_.py', 'program': '/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/003_train_1024_.py'}
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_init.py:_log_setup():521] Logging user logs to /nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/wandb/run-20240424_140803-8drg82gi/logs/debug.log
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_init.py:_log_setup():522] Logging internal logs to /nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/wandb/run-20240424_140803-8drg82gi/logs/debug-internal.log
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_init.py:init():561] calling init triggers
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_init.py:init():568] wandb.init called with sweep_config: {}
+config: {'learning_rate': 0.001, 'epochs': 500, 'Loss fn': 'NCC, L2_norm', 'Optimizer': 'Adam', 'NCC Hyperparameters': 1, 'L2_norm Hyperparameters': 0.01, 'Batch Size': 4}
+2024-04-24 14:08:04,292 INFO    MainThread:1394211 [wandb_init.py:init():611] starting backend
+2024-04-24 14:08:04,293 INFO    MainThread:1394211 [wandb_init.py:init():615] setting up manager
+2024-04-24 14:08:04,294 INFO    MainThread:1394211 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-04-24 14:08:04,297 INFO    MainThread:1394211 [wandb_init.py:init():623] backend started and connected
+2024-04-24 14:08:04,301 INFO    MainThread:1394211 [wandb_init.py:init():715] updated telemetry
+2024-04-24 14:08:04,356 INFO    MainThread:1394211 [wandb_init.py:init():748] communicating run to backend with 90.0 second timeout
+2024-04-24 14:08:05,097 INFO    MainThread:1394211 [wandb_run.py:_on_init():2357] communicating current version
+2024-04-24 14:08:05,292 INFO    MainThread:1394211 [wandb_run.py:_on_init():2366] got version response 
+2024-04-24 14:08:05,292 INFO    MainThread:1394211 [wandb_init.py:init():799] starting run threads in backend
+2024-04-24 14:08:12,756 INFO    MainThread:1394211 [wandb_run.py:_console_start():2335] atexit reg
+2024-04-24 14:08:12,756 INFO    MainThread:1394211 [wandb_run.py:_redirect():2190] redirect: wrap_raw
+2024-04-24 14:08:12,757 INFO    MainThread:1394211 [wandb_run.py:_redirect():2255] Wrapping output streams.
+2024-04-24 14:08:12,757 INFO    MainThread:1394211 [wandb_run.py:_redirect():2280] Redirects installed.
+2024-04-24 14:08:12,757 INFO    MainThread:1394211 [wandb_init.py:init():842] run started, returning control to user process
