@@ -1,0 +1,1 @@
+{"Epoch": 68, "Train Loss": 6.002518317773925e-14, "Val Loss": 1.2473161788420749e-14, "NCC Loss": 0.0, "Smoothness Loss": 6.002518317773925e-14, "_timestamp": 1714181476.0396128, "_runtime": 10072.181685686111, "_step": 68, "_wandb": {"runtime": 10217}}

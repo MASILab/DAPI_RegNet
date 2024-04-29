@@ -10,6 +10,9 @@ os.environ['VXM_BACKEND'] = 'pytorch'
 import voxelmorph as vxm
 from scipy.ndimage import map_coordinates
 from skimage import exposure
+from skimage.util import view_as_windows
+from math import ceil
+
 Image.MAX_IMAGE_PIXELS = None
 
 
@@ -269,6 +272,78 @@ class AllStainUtils:
         reconstructed_stain3 = reconstructed_stain3.squeeze().squeeze()
 
         return reconstructed_tissue, reconstructed_stain1, reconstructed_stain2, reconstructed_stain3
+    
+    @staticmethod
+    def load_tissues_for_overlap(moving,fixed,mask):
+        moving=np.array(Image.open(moving))
+        fixed=np.array(Image.open(fixed))
+        mask=np.array(Image.open(mask))
+        moving=(moving*mask)/255.
+        fixed=(fixed*mask)/255.
+        # Calculate the required padding size
+        patch_size = 1024
+        overlap = 200
+
+        n_patches_height = ceil((moving.shape[0] - overlap) / (patch_size - overlap))
+        n_patches_width = ceil((moving.shape[1] - overlap) / (patch_size - overlap))
+
+        # Calculate the required padding size
+        pad_height = n_patches_height * (patch_size - overlap) + overlap - moving.shape[0]
+        pad_width = n_patches_width * (patch_size - overlap) + overlap - moving.shape[1]
+
+        # Pad the images
+        moving = np.pad(moving, ((0, pad_height), (0, pad_width)), mode='constant')
+        fixed = np.pad(fixed, ((0, pad_height), (0, pad_width)), mode='constant')
+
+        return moving, fixed
+
+
+    
+    @staticmethod
+    def register_tissues_with_overlap(moving, fixed, model, device):
+        block_size = (1024, 1024)
+        overlap = 200
+        stride = (block_size[0] - overlap, block_size[1] - overlap)
+        height, width = moving.shape
+
+        # Accumulator arrays for averaging overlapping areas
+        full_tissue = np.zeros_like(moving, dtype=np.float32)
+        full_field = np.zeros_like(moving, dtype=np.float32)
+        count_map = np.zeros_like(moving, dtype=np.float32)
+
+        num_blocks_x = (width - overlap) // stride[1] + 1
+        num_blocks_y = (height - overlap) // stride[0] + 1
+
+        for i in range(num_blocks_y):
+            for j in range(num_blocks_x):
+                y_start = i * stride[0]
+                x_start = j * stride[1]
+                y_end = min(y_start + block_size[0], height)
+                x_end = min(x_start + block_size[1], width)
+
+                moving_block = moving[y_start:y_end, x_start:x_end]
+                fixed_block = fixed[y_start:y_end, x_start:x_end]
+
+                moving_block = moving_block[np.newaxis, ..., np.newaxis]
+                fixed_block = fixed_block[np.newaxis, ..., np.newaxis]
+                if moving_block.shape!=(1, 1024, 1024, 1):
+                    continue
+                moving_block = torch.from_numpy(moving_block).to(device).float().permute(0, 3, 1, 2)
+                fixed_block = torch.from_numpy(fixed_block).to(device).float().permute(0, 3, 1, 2)
+
+                fwd_pred = model(moving_block, fixed_block, registration=True)
+
+
+                # Update full image and field accumulators
+                full_tissue[y_start:y_end, x_start:x_end] += fwd_pred[0].detach().cpu().numpy().squeeze()
+                count_map[y_start:y_end, x_start:x_end] += 1
+
+        # Averaging the accumulated values
+        full_tissue /= count_map
+
+        return full_tissue
+
+
 
 
 

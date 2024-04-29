@@ -64,26 +64,27 @@ losses=[image_loss_func]
 weights=[1]
 
 losses += [vxm.losses.Grad('l2',loss_mult=2).loss]
-weights += [0.001]
+weights += [0.01]
 
 
 epoch_loss_final=[]
 epoch_val_loss_final=[]
-inference_dir='/home-local/rudravg/test_DAPI/1024_Dataset_V2/trial2_epochs/'
+inference_dir='/home-local/rudravg/test_DAPI/1024_Dataset_V2/Inc_smoothness_epochs/'
 best_val_loss = float('inf')
 patience = 50
 epochs_no_improve = 0
 
 run = wandb.init(
+
     project="Voxelmorph_1024_Images",   
-    name="WSize_32_Denom_1e-2",
+    name="WSize_32_Denom_1e-2_Smooth_0.01",
     config={
         "learning_rate": 0.001,
         "epochs": 500,
         "Loss fn": "my_NCC, L2_norm",
         "Optimizer":"Adam",
         "NCC Hyperparameters":1,
-        "L2_norm Hyperparameters":0.001,
+        "L2_norm Hyperparameters":0.01,
         "Batch Size":4,
         "NCC_Win_Size":32,
         "NCC denominator":1e-2
