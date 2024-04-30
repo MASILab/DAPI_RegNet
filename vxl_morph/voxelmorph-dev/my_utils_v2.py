@@ -117,9 +117,9 @@ class Utils_v2:
 
         # Accumulator arrays for averaging overlapping areas
         full_tissue = np.zeros_like(moving, dtype=np.float32)
-        stain1 = np.zeros_like(moving, dtype=np.float32) if stain1 is not None else None
-        stain2 = np.zeros_like(moving, dtype=np.float32) if stain2 is not None else None
-        stain3 = np.zeros_like(moving, dtype=np.float32) if stain3 is not None else None
+        stain1_accumulator = np.zeros_like(moving, dtype=np.float32) if stain1 is not None else None
+        stain2_accumulator = np.zeros_like(moving, dtype=np.float32) if stain2 is not None else None
+        stain3_accumulator = np.zeros_like(moving, dtype=np.float32) if stain3 is not None else None
         count_map = np.zeros_like(moving, dtype=np.float32)
 
         num_blocks_x = (width - overlap) // stride[1] + 1
@@ -155,15 +155,15 @@ class Utils_v2:
                 if stain1_block is not None:
                     stain1_block = torch.from_numpy(stain1_block).to(device).float().permute(0, 3, 1, 2)
                     stain1_block = model.transformer(stain1_block, fwd_pred_field)
-                    stain1[y_start:y_end, x_start:x_end] += stain1_block.detach().cpu().numpy().squeeze()
+                    stain1_accumulator[y_start:y_end, x_start:x_end] += stain1_block.detach().cpu().numpy().squeeze()
                 if stain2_block is not None:
                     stain2_block = torch.from_numpy(stain2_block).to(device).float().permute(0, 3, 1, 2)
                     stain2_block = model.transformer(stain2_block, fwd_pred_field)
-                    stain2[y_start:y_end, x_start:x_end] += stain2_block.detach().cpu().numpy().squeeze()
+                    stain2_accumulator[y_start:y_end, x_start:x_end] += stain2_block.detach().cpu().numpy().squeeze()
                 if stain3_block is not None:
                     stain3_block = torch.from_numpy(stain3_block).to(device).float().permute(0, 3, 1, 2)
                     stain3_block = model.transformer(stain3_block, fwd_pred_field)
-                    stain3[y_start:y_end, x_start:x_end] += stain3_block.detach().cpu().numpy().squeeze()
+                    stain3_accumulator[y_start:y_end, x_start:x_end] += stain3_block.detach().cpu().numpy().squeeze()
                 # Update full image and field accumulators
                 full_tissue[y_start:y_end, x_start:x_end] += fwd_pred.detach().cpu().numpy().squeeze()
                 count_map[y_start:y_end, x_start:x_end] += 1
@@ -171,17 +171,17 @@ class Utils_v2:
         # Averaging the accumulated values
         full_tissue /= count_map
         if stain3 is not None:
-            stain1 /= count_map
-            stain2 /= count_map
-            stain3 /= count_map
-            return full_tissue,stain1,stain2,stain3
+            stain1_accumulator /= count_map
+            stain2_accumulator /= count_map
+            stain3_accumulator /= count_map
+            return full_tissue,stain1_accumulator,stain2_accumulator,stain3_accumulator
         elif stain2 is not None:
-            stain1 /= count_map
-            stain2 /= count_map
-            return full_tissue,stain1,stain2
+            stain1_accumulator /= count_map
+            stain2_accumulator /= count_map
+            return full_tissue,stain1_accumulator,stain2_accumulator
         elif stain1 is not None:
-            stain1 /= count_map
-            return full_tissue,stain1
+            stain1_accumulator /= count_map
+            return full_tissue,stain1_accumulator
         else:
             return full_tissue
     
