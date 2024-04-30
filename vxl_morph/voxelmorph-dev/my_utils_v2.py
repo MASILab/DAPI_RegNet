@@ -117,9 +117,9 @@ class Utils_v2:
 
         # Accumulator arrays for averaging overlapping areas
         full_tissue = np.zeros_like(moving, dtype=np.float32)
-        stain1 = np.zeros_like(moving, dtype=np.float32)
-        stain2 = np.zeros_like(moving, dtype=np.float32)
-        stain3 = np.zeros_like(moving, dtype=np.float32)
+        stain1 = np.zeros_like(moving, dtype=np.float32) if stain1 is not None else None
+        stain2 = np.zeros_like(moving, dtype=np.float32) if stain2 is not None else None
+        stain3 = np.zeros_like(moving, dtype=np.float32) if stain3 is not None else None
         count_map = np.zeros_like(moving, dtype=np.float32)
 
         num_blocks_x = (width - overlap) // stride[1] + 1
@@ -159,11 +159,11 @@ class Utils_v2:
                 if stain2_block is not None:
                     stain2_block = torch.from_numpy(stain2_block).to(device).float().permute(0, 3, 1, 2)
                     stain2_block = model.transformer(stain2_block, fwd_pred_field)
-                    stain1[y_start:y_end, x_start:x_end] += stain1_block.detach().cpu().numpy().squeeze()
+                    stain2[y_start:y_end, x_start:x_end] += stain2_block.detach().cpu().numpy().squeeze()
                 if stain3_block is not None:
                     stain3_block = torch.from_numpy(stain3_block).to(device).float().permute(0, 3, 1, 2)
                     stain3_block = model.transformer(stain3_block, fwd_pred_field)
-                    stain1[y_start:y_end, x_start:x_end] += stain1_block.detach().cpu().numpy().squeeze()
+                    stain3[y_start:y_end, x_start:x_end] += stain3_block.detach().cpu().numpy().squeeze()
                 # Update full image and field accumulators
                 full_tissue[y_start:y_end, x_start:x_end] += fwd_pred.detach().cpu().numpy().squeeze()
                 count_map[y_start:y_end, x_start:x_end] += 1
@@ -171,8 +171,6 @@ class Utils_v2:
         # Averaging the accumulated values
         full_tissue /= count_map
         if stain3 is not None:
-            print(stain3)
-            print("Getting it from the first if statement")
             stain1 /= count_map
             stain2 /= count_map
             stain3 /= count_map
