@@ -96,7 +96,7 @@ class Utils_v2:
         return full_tissue,stain1
     
     @staticmethod
-    def register_multiple_tissues_with_overlap(moving, fixed, model, device,stain1=None,stain2=None,stain3=None):
+    def register_multiple_tissues_with_overlap(moving, fixed, model, device,stain1=None,stain2=None,stain3=None,stain4=None,stain5=None,stain6=None):
         """
         Register two images and corresponding stains with overlap
         Args:
@@ -120,6 +120,9 @@ class Utils_v2:
         stain1_accumulator = np.zeros_like(moving, dtype=np.float32) if stain1 is not None else None
         stain2_accumulator = np.zeros_like(moving, dtype=np.float32) if stain2 is not None else None
         stain3_accumulator = np.zeros_like(moving, dtype=np.float32) if stain3 is not None else None
+        stain4_accumulator = np.zeros_like(moving, dtype=np.float32) if stain4 is not None else None
+        stain5_accumulator = np.zeros_like(moving, dtype=np.float32) if stain5 is not None else None
+        stain6_accumulator = np.zeros_like(moving, dtype=np.float32) if stain6 is not None else None
         count_map = np.zeros_like(moving, dtype=np.float32)
 
         num_blocks_x = (width - overlap) // stride[1] + 1
@@ -137,6 +140,9 @@ class Utils_v2:
                 stain1_block = stain1[y_start:y_end, x_start:x_end] if stain1 is not None else None
                 stain2_block = stain2[y_start:y_end, x_start:x_end] if stain2 is not None else None
                 stain3_block = stain3[y_start:y_end, x_start:x_end] if stain3 is not None else None
+                stain4_block = stain4[y_start:y_end, x_start:x_end] if stain4 is not None else None
+                stain5_block = stain5[y_start:y_end, x_start:x_end] if stain5 is not None else None
+                stain6_block = stain6[y_start:y_end, x_start:x_end] if stain6 is not None else None
 
                 moving_block = moving_block[np.newaxis, ..., np.newaxis]
                 fixed_block = fixed_block[np.newaxis, ..., np.newaxis]
@@ -146,6 +152,12 @@ class Utils_v2:
                     stain2_block = stain2_block[np.newaxis, ..., np.newaxis]
                 if stain3_block is not None:
                     stain3_block = stain3_block[np.newaxis, ..., np.newaxis]
+                if stain4_block is not None:
+                    stain4_block = stain4_block[np.newaxis, ..., np.newaxis]
+                if stain5_block is not None:
+                    stain5_block = stain5_block[np.newaxis, ..., np.newaxis]
+                if stain6_block is not None:
+                    stain6_block = stain6_block[np.newaxis, ..., np.newaxis]
                 if moving_block.shape!=(1, 1024, 1024, 1):
                     continue
                 moving_block = torch.from_numpy(moving_block).to(device).float().permute(0, 3, 1, 2)
@@ -164,13 +176,46 @@ class Utils_v2:
                     stain3_block = torch.from_numpy(stain3_block).to(device).float().permute(0, 3, 1, 2)
                     stain3_block = model.transformer(stain3_block, fwd_pred_field)
                     stain3_accumulator[y_start:y_end, x_start:x_end] += stain3_block.detach().cpu().numpy().squeeze()
+                if stain4_block is not None:
+                    stain4_block = torch.from_numpy(stain4_block).to(device).float().permute(0, 3, 1, 2)
+                    stain4_block = model.transformer(stain4_block, fwd_pred_field)
+                    stain4_accumulator[y_start:y_end, x_start:x_end] += stain4_block.detach().cpu().numpy().squeeze()
+                if stain5_block is not None:
+                    stain5_block = torch.from_numpy(stain5_block).to(device).float().permute(0, 3, 1, 2)
+                    stain5_block = model.transformer(stain5_block, fwd_pred_field)
+                    stain5_accumulator[y_start:y_end, x_start:x_end] += stain5_block.detach().cpu().numpy().squeeze()
+                if stain6_block is not None:
+                    stain6_block = torch.from_numpy(stain6_block).to(device).float().permute(0, 3, 1, 2)
+                    stain6_block = model.transformer(stain6_block, fwd_pred_field)
+                    stain6_accumulator[y_start:y_end, x_start:x_end] += stain6_block.detach().cpu().numpy().squeeze()
                 # Update full image and field accumulators
                 full_tissue[y_start:y_end, x_start:x_end] += fwd_pred.detach().cpu().numpy().squeeze()
                 count_map[y_start:y_end, x_start:x_end] += 1
 
         # Averaging the accumulated values
         full_tissue /= count_map
-        if stain3 is not None:
+        if stain6 is not None:
+            stain1_accumulator /= count_map
+            stain2_accumulator /= count_map
+            stain3_accumulator /= count_map
+            stain4_accumulator /= count_map
+            stain5_accumulator /= count_map
+            stain6_accumulator /= count_map
+            return full_tissue,stain1_accumulator,stain2_accumulator,stain3_accumulator,stain4_accumulator,stain5_accumulator,stain6_accumulator
+        elif stain5 is not None:
+            stain1_accumulator /= count_map
+            stain2_accumulator /= count_map
+            stain3_accumulator /= count_map
+            stain4_accumulator /= count_map
+            stain5_accumulator /= count_map
+            return full_tissue,stain1_accumulator,stain2_accumulator,stain3_accumulator,stain4_accumulator,stain5_accumulator
+        elif stain4 is not None:
+            stain1_accumulator /= count_map
+            stain2_accumulator /= count_map
+            stain3_accumulator /= count_map
+            stain4_accumulator /= count_map
+            return full_tissue,stain1_accumulator,stain2_accumulator,stain3_accumulator,stain4_accumulator
+        elif stain3 is not None:
             stain1_accumulator /= count_map
             stain2_accumulator /= count_map
             stain3_accumulator /= count_map
