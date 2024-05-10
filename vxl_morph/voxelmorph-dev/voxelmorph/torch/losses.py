@@ -23,7 +23,7 @@ class NCC:
         assert ndims in [1, 2, 3], "volumes should be 1 to 3 dimensions. found: %d" % ndims
 
         # set window size
-        win = [32] * ndims if self.win is None else self.win
+        win = [128] * ndims if self.win is None else self.win
 
         # compute filters
         sum_filt = torch.ones([1, 1, *win]).to("cuda")

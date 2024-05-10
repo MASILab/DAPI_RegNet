@@ -124,6 +124,7 @@ class Utils_v2:
         stain5_accumulator = np.zeros_like(moving, dtype=np.float32) if stain5 is not None else None
         stain6_accumulator = np.zeros_like(moving, dtype=np.float32) if stain6 is not None else None
         count_map = np.zeros_like(moving, dtype=np.float32)
+        L2_map=np.zeros_like(moving, dtype=np.float32)
 
         num_blocks_x = (width - overlap) // stride[1] + 1
         num_blocks_y = (height - overlap) // stride[0] + 1

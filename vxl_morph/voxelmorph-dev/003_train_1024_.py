@@ -77,7 +77,7 @@ epochs_no_improve = 0
 run = wandb.init(
 
     project="Voxelmorph_1024_Images",   
-    name="WSize_32_Denom_1e-2_Smooth_0.01",
+    name="WSize_32_Denom_1e-2_Smooth_0.1",
     config={
         "learning_rate": 0.001,
         "epochs": 500,

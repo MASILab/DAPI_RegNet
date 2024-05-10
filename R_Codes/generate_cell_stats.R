@@ -12,7 +12,7 @@ if (length(args) < 2) {
 
 csv_file <- args[1]
 name <- args[2]
-output_path <- "/fs5/p_masi/rudravg/MxIF_Vxm_Registered/sheets"
+output_path <- "/fs5/p_masi/rudravg/MxIF_Vxm_Registered/metrics"
 
 cell <- read.csv(csv_file)
 
