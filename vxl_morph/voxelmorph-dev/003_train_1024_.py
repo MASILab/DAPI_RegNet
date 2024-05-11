@@ -69,7 +69,8 @@ weights += [0.01]
 
 epoch_loss_final=[]
 epoch_val_loss_final=[]
-inference_dir='/home-local/rudravg/test_DAPI/1024_Dataset_V2/Inc_smoothness_epochs/'
+inference_dir='/home-local/rudravg/test_DAPI/1024_Dataset_V2/Inc_smoothness_epochs_v2/'
+os.makedirs(inference_dir,exist_ok=True)
 best_val_loss = float('inf')
 patience = 50
 epochs_no_improve = 0
@@ -77,21 +78,22 @@ epochs_no_improve = 0
 run = wandb.init(
 
     project="Voxelmorph_1024_Images",   
-    name="WSize_32_Denom_1e-2_Smooth_0.1",
+    name="WSize_32_Denom_1e-2_Smooth_0.01",
     config={
         "learning_rate": 0.001,
-        "epochs": 500,
-        "Loss fn": "my_NCC, L2_norm",
+        "epochs": 100,
+        "Loss fn": "NCC, L2_norm",
         "Optimizer":"Adam",
         "NCC Hyperparameters":1,
         "L2_norm Hyperparameters":0.01,
         "Batch Size":4,
-        "NCC_Win_Size":32,
-        "NCC denominator":1e-2
+        "NCC_Win_Size":128,
+        "NCC denominator":1e-2,
+        "Epochs storage":f'{inference_dir}'
     },
 )
 
-for epoch in range(500):
+for epoch in range(100):
     ########### Training ###########
     model.train()
     epoch_loss=[]
