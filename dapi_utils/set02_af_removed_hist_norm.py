@@ -44,28 +44,29 @@ metadata_cy5.append({'ROUND_ID': '15','Marker':'Background','ms':100})
 metadata_cy5.append({'ROUND_ID': '16','Marker':'FOXP3','ms':500})
 metadata_cy5.append({'ROUND_ID': '17','Marker':'Background','ms':500})
 metadata_cy5.append({'ROUND_ID': '18','Marker':'ERBB2','ms':1000})
+
 metadata_cy2.append({'ROUND_ID': '00','Marker':'AF','ms':75})
 metadata_cy2.append({'ROUND_ID': '01','Marker':'Background','ms':75})
-metadata_cy2.append({'ROUND_ID': '02','Marker':'Muc2','ms':75})
+metadata_cy2.append({'ROUND_ID': '02','Marker':'Muc2','ms':75}) #
 metadata_cy2.append({'ROUND_ID': '03','Marker':'Background','ms':75})
-metadata_cy2.append({'ROUND_ID': '04','Marker':'CD11B','ms':500})
+metadata_cy2.append({'ROUND_ID': '04','Marker':'CD11B','ms':500}) #
 metadata_cy2.append({'ROUND_ID': '05','Marker':'Background','ms':500})
-metadata_cy2.append({'ROUND_ID': '06','Marker':'PCNA','ms':175})
+metadata_cy2.append({'ROUND_ID': '06','Marker':'PCNA','ms':175}) #
 metadata_cy2.append({'ROUND_ID': '07','Marker':'Background','ms':175})
-metadata_cy2.append({'ROUND_ID': '08','Marker':'pEGFR','ms':175})
+metadata_cy2.append({'ROUND_ID': '08','Marker':'pEGFR','ms':175}) #
 metadata_cy2.append({'ROUND_ID': '09','Marker':'Background','ms':175})
-metadata_cy2.append({'ROUND_ID': '10','Marker':'Cox2','ms':500})
+metadata_cy2.append({'ROUND_ID': '10','Marker':'Cox2','ms':500}) #
 metadata_cy2.append({'ROUND_ID': '11','Marker':'Background','ms':500})
-metadata_cy2.append({'ROUND_ID': '12','Marker':'PanCK','ms':100})
+metadata_cy2.append({'ROUND_ID': '12','Marker':'PanCK','ms':100}) #
 metadata_cy2.append({'ROUND_ID': '13','Marker':'Background','ms':100})
-metadata_cy2.append({'ROUND_ID': '14','Marker':'ACTININ','ms':350})
+metadata_cy2.append({'ROUND_ID': '14','Marker':'ACTININ','ms':350}) #
 metadata_cy2.append({'ROUND_ID': '15','Marker':'Background','ms':350})
-metadata_cy2.append({'ROUND_ID': '16','Marker':'Vimentin','ms':75})
+metadata_cy2.append({'ROUND_ID': '16','Marker':'Vimentin','ms':75}) #
 metadata_cy2.append({'ROUND_ID': '17','Marker':'Background','ms':75})
-metadata_cy2.append({'ROUND_ID': '18','Marker':'Lysozyme','ms':200})
+metadata_cy2.append({'ROUND_ID': '18','Marker':'Lysozyme','ms':200}) #
 
 #sample_id_list = ['GCA020ACB_TISSUE01','GCA020ACB_TISSUE02','GCA020ACB_TISSUE03','GCA020TIB_TISSUE01','GCA020TIB_TISSUE02','GCA020TIB_TISSUE03','GCA022ACB_TISSUE01','GCA022ACB_TISSUE02','GCA022ACB_TISSUE03','GCA022TIB_TISSUE01','GCA022TIB_TISSUE02','GCA033ACB_TISSUE01','GCA033ACB_TISSUE02','GCA033TIB_TISSUE01','GCA033TIB_TISSUE02','GCA033TIB_TISSUE03','GCA035ACB_TISSUE01','GCA035ACB_TISSUE02','GCA035ACB_TISSUE03','GCA035TIB_TISSUE01','GCA035TIB_TISSUE02','GCA035TIB_TISSUE03','GCA039ACB_TISSUE01','GCA039ACB_TISSUE02','GCA039TIB_TISSUE01','GCA039TIB_TISSUE02','GCA045ACB','GCA045TIB_TISSUE01','GCA045TIB_TISSUE02','GCA059ACB_TISSUE01','GCA059ACB_TISSUE02','GCA059ACB_TISSUE03','GCA059TIB_TISSUE01','GCA059TIB_TISSUE02','GCA059TIB_TISSUE03']
-sample_id_list = ['GCA033TIB_TISSUE01']
+sample_id_list = ['GCA020TIB_TISSUE01']
 
 def histogram_normalization(img_bg, img_marker):
     hist1, _ = np.histogram(img_bg.flatten(), 256, [0, 256])
@@ -149,8 +150,9 @@ for sample_id in sample_id_list:
     #else:
     sample_dir = sample_id
 
-    marker_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered/{sample_dir}/Unregistered'
-    marker_tmp_result_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered/{sample_dir}/Unregistered/AF_Removed'
+    marker_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered/{sample_dir}'
+    print(marker_path)
+    marker_tmp_result_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered/{sample_dir}/AF_Removed'
     os.mkdir(marker_tmp_result_path)
 
     
@@ -175,7 +177,7 @@ for sample_id in sample_id_list:
         if cur_round_id == 0:
             #in set02, we don't need the marker in round 0, just skip. 
             # no background image available, only deal with af removal
-            cur_cy2_image_normalized_corrected = cur_cy2_image
+            cur_gfp_image_normalized_corrected = cur_cy2_image
             cur_cy3_image_normalized_corrected = cur_cy3_image
             cur_cy5_image_normalized_corrected = cur_cy5_image
 
@@ -188,6 +190,7 @@ for sample_id in sample_id_list:
 
             bg_cy2_exposure = metadata_cy2[bg_round_id]['ms']
             bg_cy2_image = tiff.imread(f'{marker_path}/{sample_id}_Background_CY2_{bg_cy2_exposure}ms_ROUND_{bg_round_name}.tif')
+            #print(f'{marker_path}/{sample_id}_Background_CY2_{bg_cy2_exposure}ms_ROUND_{bg_round_name}.tif')
 
             bg_cy3_exposure = metadata_cy3[bg_round_id]['ms']
             bg_cy3_image = tiff.imread(f'{marker_path}/{sample_id}_Background_CY3_{bg_cy3_exposure}ms_ROUND_{bg_round_name}.tif')
@@ -199,6 +202,6 @@ for sample_id in sample_id_list:
             cur_cy3_image_normalized_corrected = histogram_normalization(bg_cy3_image, cur_cy3_image)
             cur_cy5_image_normalized_corrected = histogram_normalization(bg_cy5_image, cur_cy5_image)
 
-        tiff.imwrite(f'{marker_tmp_result_path}/ROUND_{cur_round_name}_CY2_{sample_id}_{cur_cy2_marker}_normalized_corrected.tif', cur_cy2_image_normalized_corrected)
+        tiff.imwrite(f'{marker_tmp_result_path}/ROUND_{cur_round_name}_CY2_{sample_id}_{cur_cy2_marker}_normalized_corrected.tif', cur_gfp_image_normalized_corrected)
         tiff.imwrite(f'{marker_tmp_result_path}/ROUND_{cur_round_name}_CY3_{sample_id}_{cur_cy3_marker}_normalized_corrected.tif', cur_cy3_image_normalized_corrected)
         tiff.imwrite(f'{marker_tmp_result_path}/ROUND_{cur_round_name}_CY5_{sample_id}_{cur_cy5_marker}_normalized_corrected.tif', cur_cy5_image_normalized_corrected)

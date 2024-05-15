@@ -64,12 +64,12 @@ losses=[image_loss_func]
 weights=[1]
 
 losses += [vxm.losses.Grad('l2',loss_mult=2).loss]
-weights += [0.1]
+weights += [10]
 
 
 epoch_loss_final=[]
 epoch_val_loss_final=[]
-inference_dir='/home/rudravg/Smoothness_0.1_epochs/'
+inference_dir='/home/rudravg/Smoothness_10_epochs/'
 os.makedirs(inference_dir,exist_ok=True)
 best_val_loss = float('inf')
 patience = 50
@@ -78,14 +78,14 @@ epochs_no_improve = 0
 run = wandb.init(
 
     project="Voxelmorph_1024_Images",   
-    name="WSize_32_Denom_1e-2_Smooth_0.1",
+    name="WSize_128_Denom_1e-2_Smooth_10",
     config={
         "learning_rate": 0.001,
-        "epochs": 100,
+        "epochs": 50,
         "Loss fn": "NCC, L2_norm",
         "Optimizer":"Adam",
         "NCC Hyperparameters":1,
-        "L2_norm Hyperparameters":0.1,
+        "L2_norm Hyperparameters":10,
         "Batch Size":4,
         "NCC_Win_Size":128,
         "NCC denominator":1e-2,
@@ -93,7 +93,7 @@ run = wandb.init(
     },
 )
 
-for epoch in range(100):
+for epoch in range(50):
     ########### Training ###########
     model.train()
     epoch_loss=[]
