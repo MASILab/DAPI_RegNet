@@ -38,12 +38,12 @@ class Utils_v2:
         return tissue,height,width
     
     @staticmethod
-    def register_tissues_with_overlap(moving, fixed, model, device,stain1=None):
+    def register_tissues_with_overlap(dapi_round_last, dapi_round0, model, device,stain1=None):
         """
         Register two images with overlap
         Args:
-        moving: moving image
-        fixed: fixed image
+        dapi_round_last: dapi_round_last image
+        dapi_round0: dapi_round0 image
         model: Model
         device: Device
         stain: Stain image
@@ -52,12 +52,12 @@ class Utils_v2:
         block_size = (1024, 1024)
         overlap = 200
         stride = (block_size[0] - overlap, block_size[1] - overlap)
-        height, width = moving.shape
+        height, width = dapi_round_last.shape
 
         # Accumulator arrays for averaging overlapping areas
-        full_tissue = np.zeros_like(moving, dtype=np.float32)
-        stain1 = np.zeros_like(moving, dtype=np.float32)
-        count_map = np.zeros_like(moving, dtype=np.float32)
+        full_tissue = np.zeros_like(dapi_round_last, dtype=np.float32)
+        stain1 = np.zeros_like(dapi_round_last, dtype=np.float32)
+        count_map = np.zeros_like(dapi_round_last, dtype=np.float32)
 
         num_blocks_x = (width - overlap) // stride[1] + 1
         num_blocks_y = (height - overlap) // stride[0] + 1
@@ -69,19 +69,19 @@ class Utils_v2:
                 y_end = min(y_start + block_size[0], height)
                 x_end = min(x_start + block_size[1], width)
 
-                moving_block = moving[y_start:y_end, x_start:x_end]
-                fixed_block = fixed[y_start:y_end, x_start:x_end]
+                dapi_round_last_block = dapi_round_last[y_start:y_end, x_start:x_end]
+                fixed_block = dapi_round0[y_start:y_end, x_start:x_end]
                 stain_block = stain1[y_start:y_end, x_start:x_end]
 
-                moving_block = moving_block[np.newaxis, ..., np.newaxis]
+                dapi_round_last_block = dapi_round_last_block[np.newaxis, ..., np.newaxis]
                 fixed_block = fixed_block[np.newaxis, ..., np.newaxis]
                 stain_block = stain_block[np.newaxis, ..., np.newaxis]
-                if moving_block.shape!=(1, 1024, 1024, 1):
+                if dapi_round_last_block.shape!=(1, 1024, 1024, 1):
                     continue
-                moving_block = torch.from_numpy(moving_block).to(device).float().permute(0, 3, 1, 2)
+                dapi_round_last_block = torch.from_numpy(dapi_round_last_block).to(device).float().permute(0, 3, 1, 2)
                 fixed_block = torch.from_numpy(fixed_block).to(device).float().permute(0, 3, 1, 2)
 
-                fwd_pred,fwd_pred_field = model(moving_block, fixed_block, registration=True)
+                fwd_pred,fwd_pred_field = model(dapi_round_last_block, fixed_block, registration=True)
                 stain1_block = model.transformer(stain_block, fwd_pred_field)
 
                 # Update full image and field accumulators
@@ -96,12 +96,12 @@ class Utils_v2:
         return full_tissue,stain1
     
     @staticmethod
-    def register_multiple_tissues_with_overlap(moving, fixed, model, device,stain1=None,stain2=None,stain3=None,stain4=None,stain5=None,stain6=None):
+    def register_multiple_tissues_with_overlap(dapi_round_last, dapi_round0, model, device,stain1=None,stain2=None,stain3=None,stain4=None,stain5=None,stain6=None):
         """
         Register two images and corresponding stains with overlap
         Args:
-        moving: moving image
-        fixed: fixed image
+        dapi_round_last: dapi_round_last image
+        dapi_round0: dapi_round0 image
         stain1: First stain image
         stain2: Second stain image
         stain3: Third stain image
@@ -113,18 +113,18 @@ class Utils_v2:
         block_size = (1024, 1024)
         overlap = 200
         stride = (block_size[0] - overlap, block_size[1] - overlap)
-        height, width = moving.shape
+        height, width = dapi_round_last.shape
 
         # Accumulator arrays for averaging overlapping areas
-        full_tissue = np.zeros_like(moving, dtype=np.float32)
-        stain1_accumulator = np.zeros_like(moving, dtype=np.float32) if stain1 is not None else None
-        stain2_accumulator = np.zeros_like(moving, dtype=np.float32) if stain2 is not None else None
-        stain3_accumulator = np.zeros_like(moving, dtype=np.float32) if stain3 is not None else None
-        stain4_accumulator = np.zeros_like(moving, dtype=np.float32) if stain4 is not None else None
-        stain5_accumulator = np.zeros_like(moving, dtype=np.float32) if stain5 is not None else None
-        stain6_accumulator = np.zeros_like(moving, dtype=np.float32) if stain6 is not None else None
-        count_map = np.zeros_like(moving, dtype=np.float32)
-        L2_map=np.zeros_like(moving, dtype=np.float32)
+        full_tissue = np.zeros_like(dapi_round_last, dtype=np.float32)
+        stain1_accumulator = np.zeros_like(dapi_round_last, dtype=np.float32) if stain1 is not None else None
+        stain2_accumulator = np.zeros_like(dapi_round_last, dtype=np.float32) if stain2 is not None else None
+        stain3_accumulator = np.zeros_like(dapi_round_last, dtype=np.float32) if stain3 is not None else None
+        stain4_accumulator = np.zeros_like(dapi_round_last, dtype=np.float32) if stain4 is not None else None
+        stain5_accumulator = np.zeros_like(dapi_round_last, dtype=np.float32) if stain5 is not None else None
+        stain6_accumulator = np.zeros_like(dapi_round_last, dtype=np.float32) if stain6 is not None else None
+        count_map = np.zeros_like(dapi_round_last, dtype=np.float32)
+        L2_map=np.zeros_like(dapi_round_last, dtype=np.float32)
 
         num_blocks_x = (width - overlap) // stride[1] + 1
         num_blocks_y = (height - overlap) // stride[0] + 1
@@ -136,8 +136,8 @@ class Utils_v2:
                 y_end = min(y_start + block_size[0], height)
                 x_end = min(x_start + block_size[1], width)
 
-                moving_block = moving[y_start:y_end, x_start:x_end]
-                fixed_block = fixed[y_start:y_end, x_start:x_end]
+                dapi_round_last_block = dapi_round_last[y_start:y_end, x_start:x_end]
+                fixed_block = dapi_round0[y_start:y_end, x_start:x_end]
                 stain1_block = stain1[y_start:y_end, x_start:x_end] if stain1 is not None else None
                 stain2_block = stain2[y_start:y_end, x_start:x_end] if stain2 is not None else None
                 stain3_block = stain3[y_start:y_end, x_start:x_end] if stain3 is not None else None
@@ -145,7 +145,7 @@ class Utils_v2:
                 stain5_block = stain5[y_start:y_end, x_start:x_end] if stain5 is not None else None
                 stain6_block = stain6[y_start:y_end, x_start:x_end] if stain6 is not None else None
 
-                moving_block = moving_block[np.newaxis, ..., np.newaxis]
+                dapi_round_last_block = dapi_round_last_block[np.newaxis, ..., np.newaxis]
                 fixed_block = fixed_block[np.newaxis, ..., np.newaxis]
                 if stain1_block is not None:
                     stain1_block = stain1_block[np.newaxis, ..., np.newaxis]
@@ -159,12 +159,12 @@ class Utils_v2:
                     stain5_block = stain5_block[np.newaxis, ..., np.newaxis]
                 if stain6_block is not None:
                     stain6_block = stain6_block[np.newaxis, ..., np.newaxis]
-                if moving_block.shape!=(1, 1024, 1024, 1):
+                if dapi_round_last_block.shape!=(1, 1024, 1024, 1):
                     continue
-                moving_block = torch.from_numpy(moving_block).to(device).float().permute(0, 3, 1, 2)
+                dapi_round_last_block = torch.from_numpy(dapi_round_last_block).to(device).float().permute(0, 3, 1, 2)
                 fixed_block = torch.from_numpy(fixed_block).to(device).float().permute(0, 3, 1, 2)
 
-                fwd_pred,fwd_pred_field = model(moving_block, fixed_block, registration=True)
+                fwd_pred,fwd_pred_field = model(dapi_round_last_block, fixed_block, registration=True)
                 if stain1_block is not None:
                     stain1_block = torch.from_numpy(stain1_block).to(device).float().permute(0, 3, 1, 2)
                     stain1_block = model.transformer(stain1_block, fwd_pred_field)
@@ -261,3 +261,63 @@ class Utils_v2:
         array2 = (array2 - np.mean(array2)) / (np.std(array2))
         ncc = np.correlate(array1, array2)
         return ncc
+
+    @staticmethod
+    def combine_displacement_fields(D1, D2):
+        assert D1.shape == D2.shape, "Displacement fields must have the same shape"
+        
+        D_combined = np.zeros_like(D1)
+        
+        _, height, width = D1.shape
+        
+        X, Y = np.meshgrid(np.arange(width), np.arange(height))
+        
+        X_displaced = X + D1[0]
+        Y_displaced = Y + D1[1]
+        
+        X_displaced_clipped = np.clip(X_displaced, 0, width - 1)
+        Y_displaced_clipped = np.clip(Y_displaced, 0, height - 1)
+        
+        D2_x_interpolated = map_coordinates(D2[0], [Y_displaced_clipped, X_displaced_clipped], order=1)
+        D2_y_interpolated = map_coordinates(D2[1], [Y_displaced_clipped, X_displaced_clipped], order=1)
+        
+        D_combined[0] = D1[0] + D2_x_interpolated
+        D_combined[1] = D1[1] + D2_y_interpolated
+        
+        return D_combined
+    
+    @staticmethod
+    def L2_norm_mask(moving, fixed, model, device):
+        block_size = (1024, 1024)
+#        num_blocks_x = moving.shape[0] // block_size[0]
+#        num_blocks_y = moving.shape[1] // block_size[1]
+#        original_tissue_cropped = moving[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
+#        fixed_cropped = fixed[:num_blocks_x * block_size[0], :num_blocks_y * block_size[1]]
+        moving_tissue_blocks = view_as_blocks(moving, block_shape=block_size)
+        fixed_tissue_blocks = view_as_blocks(fixed, block_shape=block_size)
+        pred_blocks_tissue = []
+        pred_blocks_field=[]
+
+        for i in range(moving_tissue_blocks.shape[0]):
+            row_blocks_tissues = []
+            row_blocks_field = []
+            for j in range(moving_tissue_blocks.shape[1]):
+                moving_block = moving_tissue_blocks[i, j]
+                fixed_block = fixed_tissue_blocks[i, j]
+                moving_block = moving_block[np.newaxis, ..., np.newaxis]
+                fixed_block = fixed_block[np.newaxis, ..., np.newaxis]
+                moving_block = torch.from_numpy(moving_block).to(device).float().permute(0,3,1,2)
+                fixed_block = torch.from_numpy(fixed_block).to(device).float().permute(0,3,1,2)
+                fwd_pred = model(moving_block,fixed_block ,registration=True)
+                inv_pred = model(fixed_block,moving_block, registration=True)
+                composite_field = Utils_v2.combine_displacement_fields(fwd_pred[1].detach().cpu().numpy().squeeze(), inv_pred[1].detach().cpu().numpy().squeeze())
+                L2_norm_combined = np.sqrt(composite_field[0]**2 + composite_field[1]**2)
+                row_blocks_tissues.append(fwd_pred[0].detach().cpu().numpy())
+                row_blocks_field.append(L2_norm_combined)
+            pred_blocks_tissue.append(row_blocks_tissues)
+            pred_blocks_field.append(row_blocks_field)
+
+        reconstructed_tissue = np.block(pred_blocks_tissue)
+        composed_warp = np.block(pred_blocks_field)
+        reconstructed_tissue = reconstructed_tissue.squeeze().squeeze()
+        return composed_warp

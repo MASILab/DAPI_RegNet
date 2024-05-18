@@ -41,9 +41,9 @@ class ImageRegistrationDataset(Dataset):
 
 
 ##Create the dataset and dataloader
-train_dataset = ImageRegistrationDataset('/home/rudravg/pairs.txt')
-val_dataset = ImageRegistrationDataset('/home/rudravg/val_pairs.txt')
-train_data_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+train_dataset = ImageRegistrationDataset('/home-local/rudravg/pairs.txt')
+val_dataset = ImageRegistrationDataset('/home-local/rudravg/val_pairs.txt')
+train_data_loader = DataLoader(train_dataset, batch_size=5, shuffle=True)
 val_data_loader = DataLoader(val_dataset, batch_size=1, shuffle=True)
 
 # Define the model
@@ -64,12 +64,12 @@ losses=[image_loss_func]
 weights=[1]
 
 losses += [vxm.losses.Grad('l2',loss_mult=2).loss]
-weights += [10]
+weights += [100]
 
 
 epoch_loss_final=[]
 epoch_val_loss_final=[]
-inference_dir='/home/rudravg/Smoothness_10_epochs/'
+inference_dir='/home-local/rudravg/Smoothness_100_epochs/'
 os.makedirs(inference_dir,exist_ok=True)
 best_val_loss = float('inf')
 patience = 50
@@ -78,15 +78,15 @@ epochs_no_improve = 0
 run = wandb.init(
 
     project="Voxelmorph_1024_Images",   
-    name="WSize_128_Denom_1e-2_Smooth_10",
+    name="WSize_128_Denom_1e-2_Smooth_100",
     config={
         "learning_rate": 0.001,
         "epochs": 50,
         "Loss fn": "NCC, L2_norm",
         "Optimizer":"Adam",
         "NCC Hyperparameters":1,
-        "L2_norm Hyperparameters":10,
-        "Batch Size":4,
+        "L2_norm Hyperparameters":100,
+        "Batch Size":5,
         "NCC_Win_Size":128,
         "NCC denominator":1e-2,
         "Epochs storage":f'{inference_dir}'

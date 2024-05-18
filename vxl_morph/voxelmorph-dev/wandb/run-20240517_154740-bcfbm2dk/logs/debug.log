@@ -1,0 +1,29 @@
+2024-05-17 15:47:41,995 INFO    MainThread:2346039 [wandb_setup.py:_flush():76] Current SDK version is 0.16.6
+2024-05-17 15:47:41,995 INFO    MainThread:2346039 [wandb_setup.py:_flush():76] Configure stats pid to 2346039
+2024-05-17 15:47:41,995 INFO    MainThread:2346039 [wandb_setup.py:_flush():76] Loading settings from /home/local/VANDERBILT/rudravg/.config/wandb/settings
+2024-05-17 15:47:41,995 INFO    MainThread:2346039 [wandb_setup.py:_flush():76] Loading settings from /nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/wandb/settings
+2024-05-17 15:47:41,995 INFO    MainThread:2346039 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-05-17 15:47:41,995 INFO    MainThread:2346039 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'vxl_morph/voxelmorph-dev/008_train_on_other_devices.py', 'program_abspath': '/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/008_train_on_other_devices.py', 'program': '/nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/008_train_on_other_devices.py'}
+2024-05-17 15:47:41,996 INFO    MainThread:2346039 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-05-17 15:47:41,996 INFO    MainThread:2346039 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-05-17 15:47:41,996 INFO    MainThread:2346039 [wandb_init.py:_log_setup():521] Logging user logs to /nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/wandb/run-20240517_154740-bcfbm2dk/logs/debug.log
+2024-05-17 15:47:41,996 INFO    MainThread:2346039 [wandb_init.py:_log_setup():522] Logging internal logs to /nfs2/forGaurav/yesbackup/DAPI_RegSegNet/vxl_morph/voxelmorph-dev/wandb/run-20240517_154740-bcfbm2dk/logs/debug-internal.log
+2024-05-17 15:47:41,996 INFO    MainThread:2346039 [wandb_init.py:init():561] calling init triggers
+2024-05-17 15:47:41,996 INFO    MainThread:2346039 [wandb_init.py:init():568] wandb.init called with sweep_config: {}
+config: {'learning_rate': 0.001, 'epochs': 50, 'Loss fn': 'NCC, L2_norm', 'Optimizer': 'Adam', 'NCC Hyperparameters': 1, 'L2_norm Hyperparameters': 100, 'Batch Size': 5, 'NCC_Win_Size': 128, 'NCC denominator': 0.01, 'Epochs storage': '/home-local/rudravg/Smoothness_100_epochs/'}
+2024-05-17 15:47:41,996 INFO    MainThread:2346039 [wandb_init.py:init():611] starting backend
+2024-05-17 15:47:41,996 INFO    MainThread:2346039 [wandb_init.py:init():615] setting up manager
+2024-05-17 15:47:41,999 INFO    MainThread:2346039 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-05-17 15:47:42,002 INFO    MainThread:2346039 [wandb_init.py:init():623] backend started and connected
+2024-05-17 15:47:42,006 INFO    MainThread:2346039 [wandb_init.py:init():715] updated telemetry
+2024-05-17 15:47:42,095 INFO    MainThread:2346039 [wandb_init.py:init():748] communicating run to backend with 90.0 second timeout
+2024-05-17 15:47:42,675 INFO    MainThread:2346039 [wandb_run.py:_on_init():2357] communicating current version
+2024-05-17 15:47:42,862 INFO    MainThread:2346039 [wandb_run.py:_on_init():2366] got version response upgrade_message: "wandb version 0.17.0 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-05-17 15:47:42,862 INFO    MainThread:2346039 [wandb_init.py:init():799] starting run threads in backend
+2024-05-17 15:48:02,350 INFO    MainThread:2346039 [wandb_run.py:_console_start():2335] atexit reg
+2024-05-17 15:48:02,359 INFO    MainThread:2346039 [wandb_run.py:_redirect():2190] redirect: wrap_raw
+2024-05-17 15:48:02,360 INFO    MainThread:2346039 [wandb_run.py:_redirect():2255] Wrapping output streams.
+2024-05-17 15:48:02,360 INFO    MainThread:2346039 [wandb_run.py:_redirect():2280] Redirects installed.
+2024-05-17 15:48:02,361 INFO    MainThread:2346039 [wandb_init.py:init():842] run started, returning control to user process
+2024-05-17 15:48:09,469 WARNING MsgRouterThr:2346039 [router.py:message_loop():77] message_loop has been closed

@@ -150,9 +150,9 @@ for sample_id in sample_id_list:
     #else:
     sample_dir = sample_id
 
-    marker_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered/{sample_dir}'
+    marker_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered/{sample_dir}_v1/Unregistered'
     print(marker_path)
-    marker_tmp_result_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered/{sample_dir}/AF_Removed'
+    marker_tmp_result_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered/{sample_dir}_v1/Unregistered/AF_Removed'
     os.mkdir(marker_tmp_result_path)
 
     
