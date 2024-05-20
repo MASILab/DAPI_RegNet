@@ -16,6 +16,21 @@ Image.MAX_IMAGE_PIXELS = None
 
 class Utils_v2:
     @staticmethod
+    def adjust_intensity(original_image, target_image):
+        original_image = original_image.astype(float)
+        target_image = target_image.astype(float)
+        ratio = np.where(target_image != 0, original_image / target_image, 0)
+        counts, bins = np.histogram(ratio[ratio != 0].ravel(), bins=255)
+        max_count_index = np.argmax(counts)
+        start = bins[max_count_index]
+        end = bins[max_count_index + 1]
+        ratios_in_bin = ratio[(ratio > start) & (ratio < end)]
+        factor = ratios_in_bin.mean()
+        adjusted_target_image = target_image * factor
+        adjusted_target_image_new = np.minimum(adjusted_target_image, original_image.max())
+        return adjusted_target_image_new,factor
+
+    @staticmethod
     def load_tissues_for_overlap(tissues,mask):
         """"
         Args:
