@@ -1,9 +1,10 @@
 rm(list = ls())
+set.seed(42)
+
 library(GammaGateR)
 library(gridExtra)
 library(ggpubr)
 library(hrbrthemes)
-set.seed(42)
 
 csv_file <- '/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA020TIB_TISSUE01/combined_GCA020TIB_instances.csv'
 name <- 'GCA020TIB_TISSUE01'
@@ -48,21 +49,5 @@ for (i in (nzNormedMarkers)){
 
   cat('\n\n')
 }
-
-boundaries = list(matrix(c(0,.45, .45, 1), byrow = TRUE, nrow=2), #CD11B
-                   matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2), #CD29
-                   matrix(c(0,.4, .6, 1), byrow = TRUE, nrow=2), #CD3d
-                   matrix(c(0,.4, .5, 1), byrow = TRUE, nrow=2), #CD45
-                   matrix(c(0,.3, .5, Inf), byrow = TRUE, nrow=2), #CD4
-                   matrix(c(0,.25, .25, Inf), byrow = TRUE, nrow=2), #CD68
-                   matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2), #CD8
-                   matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2), #CgA
-                   matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2), #Lysozome
-                  matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2), #NaKATPase
-                  matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2), #PanCK
-                  matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2), #SMA
-                  matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2), #Sox9
-                  matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2), #Vimentin
-                  matrix(c(0,.4, .4, Inf), byrow = TRUE, nrow=2),) #OLFM4
 
 
