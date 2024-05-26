@@ -29,3 +29,5 @@ post_all <- do.call(rbind, (lapply(groupPolarisFit, "[[", "expressionW")))
 write.csv(post_all, file.path(output_path, paste0(name, "_post_all.csv")), row.names = FALSE)
 
 
+
+

@@ -6,8 +6,8 @@ library(gridExtra)
 library(ggpubr)
 library(hrbrthemes)
 
-csv_file <- '/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA020TIB_TISSUE01/combined_GCA020TIB_instances.csv'
-name <- 'GCA020TIB_TISSUE01'
+csv_file <- '/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA033TIB_TISSUE01/combined_GCA033TIB_instances.csv'
+name <- 'GCA033TIB_TISSUE01'
 output_path <- "/fs5/p_masi/rudravg/MxIF_Vxm_Registered/metrics"
 
 
@@ -32,11 +32,26 @@ for(i in 1:length(allMarkers)){
 }
 
 
+boundaries = list(NULL, #CD11B
+                  NULL, #CD29
+                  NULL, #CD3d
+                  NULL, #CD45
+                  NULL, #CD4
+                  NULL, #CD68
+                  matrix(c(0,.25, .3, Inf),byrow = TRUE, nrow=2), #CD8
+                  NULL, #CgA
+                  NULL, #Lysozome
+                  NULL, #NaKATPase
+                  NULL, #PanCK
+                  NULL, #SMA
+                  NULL, #Sox9
+                  NULL, #Vimentin
+                  NULL) #OLFM4
+
 groupPolarisFit <- groupGammaGateR(cell[,nzNormedMarkers], 
                                    slide = cell$slide_id,
                                    n.cores = 1)
 
-convCheck(groupPolarisFit)
 
 for (i in (nzNormedMarkers)){
   mkr.name <- strsplit(i, split="_")[[1]][3]
@@ -46,8 +61,8 @@ for (i in (nzNormedMarkers)){
   plotss <- plot(temp, marker=i, diagnostic=FALSE, histogram=TRUE, print=FALSE, tabl=TRUE)
   print(do.call(ggarrange,plotss))
   class(temp) <- "groupGammaGateR"
-
   cat('\n\n')
 }
 
-
+post_all <- do.call(rbind, (lapply(groupPolarisFit, "[[", "expressionZ")))
+write.csv(post_all, file.path(output_path, paste0(name, "_post_all_V2.csv")), row.names = FALSE)
