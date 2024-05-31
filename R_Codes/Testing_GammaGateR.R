@@ -6,8 +6,8 @@ library(gridExtra)
 library(ggpubr)
 library(hrbrthemes)
 
-csv_file <- '/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA033TIB_TISSUE01/combined_GCA033TIB_instances.csv'
-name <- 'GCA033TIB_TISSUE01'
+csv_file <- '/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA022ACB_TISSUE03/combined_GCA022ACB_T3_instancesv'
+name <- 'GCA022ACB_T3'
 output_path <- "/fs5/p_masi/rudravg/MxIF_Vxm_Registered/metrics"
 
 
@@ -31,14 +31,30 @@ for(i in 1:length(allMarkers)){
   cat('\n\n')
 }
 
+boundaries=list        (NULL, #CD11B
+                        matrix(c(0,.35, .5, Inf),byrow = TRUE, nrow=2), #CD29
+                        matrix(c(0,.35, .5, Inf),byrow = TRUE, nrow=2), #CD3d
+                        matrix(c(0,.25, .35, Inf),byrow = TRUE, nrow=2), #CD45
+                        matrix(c(0,.2, .35, Inf),byrow = TRUE, nrow=2), #CD4
+                        matrix(c(0,.2, .35, Inf),byrow = TRUE, nrow=2), #CD68
+                        matrix(c(0,.35, .5, Inf),byrow = TRUE, nrow=2), #CD8
+                        matrix(c(0,.35, .5, Inf),byrow = TRUE, nrow=2), #CgA
+                        matrix(c(0,.2, .35, Inf),byrow = TRUE, nrow=2), #Lysozome
+                        matrix(c(0,.2, .35, Inf),byrow = TRUE, nrow=2), #NaKATPase
+                        matrix(c(0,.2, .35, Inf),byrow = TRUE, nrow=2), #PanCK
+                        matrix(c(0,.35, .5, Inf),byrow = TRUE, nrow=2), #SMA
+                        matrix(c(0,.2, .35, Inf),byrow = TRUE, nrow=2), #Sox9
+                        matrix(c(0,.35, .5, Inf),byrow = TRUE, nrow=2), #Vimentin
+                        matrix(c(0,.35, .5, Inf),byrow = TRUE, nrow=2)) #OLFM4
 
-boundaries = list(NULL, #CD11B
+
+quantileBoundaries = list(matrix(c(0,.7, .8, 1),byrow = TRUE, nrow=2), #CD11B
                   NULL, #CD29
                   NULL, #CD3d
                   NULL, #CD45
                   NULL, #CD4
                   NULL, #CD68
-                  matrix(c(0,.25, .3, Inf),byrow = TRUE, nrow=2), #CD8
+                  NULL, #CD8
                   NULL, #CgA
                   NULL, #Lysozome
                   NULL, #NaKATPase
@@ -48,9 +64,14 @@ boundaries = list(NULL, #CD11B
                   NULL, #Vimentin
                   NULL) #OLFM4
 
+names(quantileBoundaries) = names(boundaries) = nzNormedMarkers
+
+
 groupPolarisFit <- groupGammaGateR(cell[,nzNormedMarkers], 
                                    slide = cell$slide_id,
-                                   n.cores = 1)
+                                   boundaryMarkers = boundaries,
+                                   qboundaryMarkers = quantileBoundaries,
+                                   n.cores = 2)
 
 
 for (i in (nzNormedMarkers)){

@@ -8,20 +8,30 @@ import glob
 import os
 import re
 Image.MAX_IMAGE_PIXELS = None
+import argparse
+import concurrent.futures
+from tqdm import tqdm
+
+parser = argparse.ArgumentParser(description='Generate intensity stats for each instance in the mask')
+parser.add_argument('--tissue', type=str, required=True, help='The name of the tissue')
+args = parser.parse_args()
+tissue_name = args.tissue
+
 
 marker_list = ['CD11B','CD20','CD3d','CD45','CD4','CD68','CD8','CgA','Lysozyme','NaKATPase','PanCK','SMA','Sox9','Vimentin','OLFM4']
 
-image_dir='/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA033TIB_TISSUE01/Unregistered/AF_Removed'
+image_dir_registered=f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/{tissue_name}/AF_Removed'
+image_dir_unregistered=f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/{tissue_name}/Unregistered/AF_Removed'
 
 marker_files = {}
 
 # Loop over each marker
 for marker in marker_list:
     # Search for files that contain the marker name
-    files = glob.glob(os.path.join(image_dir, f"*{marker}*"))
+    files = glob.glob(os.path.join(image_dir_registered, f"*{marker}*"))
     
     # Filter the files to only include those that exactly match the marker name
-    files = [file for file in files if f"GCA033TIB_TISSUE01_{marker}_" in file.split('/')[-1]]    
+    files = [file for file in files if f"GCA022ACB_TISSUE03_{marker}_" in file.split('/')[-1]]    
     # Add the files to the dictionary
     marker_files[marker] = files
 
@@ -29,14 +39,11 @@ print(marker_files)
 
 data=[]
 
-mask = Image.open('/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA033TIB_TISSUE01/mask.tif')
-print(f'Instance Mask path is /fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA033TIB_TISSUE01/mask.tif')
+mask = Image.open(f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/{tissue_name}/mask.tif')
 mask_np = np.array(mask)
 unique_instances = np.unique(mask_np)
 unique_instances = unique_instances[unique_instances != 0] 
 
-import concurrent.futures
-from tqdm import tqdm
 
 def process_instance(instance, preloaded_images):
     # Initialize a list to hold the current row of data
@@ -89,4 +96,4 @@ df1 = pd.DataFrame(data, columns=['Instance', 'Centroid_X', 'Centroid_Y'] + mark
 df1=df1.sort_values('Instance')
 df1['slide_id'] = 'unregistered'
 
-df1.to_csv('/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA033TIB_TISSUE01/unregistered_GCA033TIB_instances.csv', index=False)
+df1.to_csv('/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA022ACB_TISSUE03/unregistered_GCA022ACB_T3_instances.csv', index=False)
