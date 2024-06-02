@@ -116,8 +116,8 @@ for sample_id in sample_id_list:
     else:
         sample_dir = sample_id
 
-    marker_path = f'/fs5/p_masi/baos1/rudravg/MXIF/MXIF/Helmsley/MxIF/Set06/{sample_dir}/Registered'
-    marker_tmp_result_path = f'/fs5/p_masi/baos1/rudravg/MXIF/MXIF/Helmsley/MxIF/Set06/{sample_dir}/tmp'
+    marker_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA112TIA'
+    marker_tmp_result_path = f'/home-local/rudravg/trial'
     # Let's set AF image as reference
     AF_ROUND_SET06 = '00' # hardcoded, can search metadata to get the round id.
     af_cy2_exposure = metadata_cy2[0]['ms']
@@ -162,6 +162,8 @@ for sample_id in sample_id_list:
 
         if cur_round_id == 1:
             #AF removed for round 1 ONLY. No background image is available
+            print(f"AF Image Path: {marker_path}/{sample_id}_AF_CY3_{af_cy3_exposure}ms_ROUND_{AF_ROUND_SET06}.tif")
+            print(f"Current Marker Image Path: {marker_path}/{sample_id}_{cur_cy3_marker}_CY3_{cur_cy3_exposure}ms_ROUND_{cur_round_name}.tif")
 
             # no background image available, only deal with af removal
             cur_cy2_image_normalized_corrected = histogram_normalization(af_cy2_image, cur_cy2_image)
@@ -188,6 +190,10 @@ for sample_id in sample_id_list:
 
             bg_cy5_exposure = metadata_cy5[bg_round_id]['ms']
             bg_cy5_image = tiff.imread(f'{marker_path}/{sample_id}_BACKGROUND_CY5_{bg_cy5_exposure}ms_ROUND_{bg_round_name}.tif')
+
+
+            print(f"AF Image Path: {marker_path}/{sample_id}_AF_CY3_{af_cy3_exposure}ms_ROUND_{AF_ROUND_SET06}.tif")
+            print(f"Current Marker Image Path: {marker_path}/{sample_id}_{cur_cy3_marker}_CY3_{cur_cy3_exposure}ms_ROUND_{cur_round_name}.tif")
 
             cur_cy2_image_normalized_corrected = histogram_normalization(bg_cy2_image, cur_cy2_image)
             cur_cy3_image_normalized_corrected = histogram_normalization(bg_cy3_image, cur_cy3_image)

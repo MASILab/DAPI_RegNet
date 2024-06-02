@@ -18,7 +18,7 @@ args = parser.parse_args()
 tissue_name = args.tissue
 
 
-marker_list = ['CD11B','CD20','CD3d','CD45','CD4','CD68','CD8','CgA','Lysozyme','NaKATPase','PanCK','SMA','Sox9','Vimentin','OLFM4']
+marker_list = ['CD11B','CD20','CD3d','CD45','CD4','CD68','CD8','CgA','Lysozyme','NaKATPase','PanCK','SMA','Sox9','Vimentin','OLFM4','Muc2']
 
 image_dir_registered=f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/{tissue_name}/AF_Removed'
 print(f'Registered image dir {image_dir_registered}')
@@ -97,7 +97,7 @@ for dir_name, dir_path in dirs.items():
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # Use the executor to map the process_instance function to the unique_instances
         # Pass preloaded_images to each function call
-        tasks = [executor.submit(process_instance, instance, preloaded_images) for instance in unique_instances[:100]]
+        tasks = [executor.submit(process_instance, instance, preloaded_images) for instance in unique_instances]
         for future in tqdm(concurrent.futures.as_completed(tasks), total=len(unique_instances)):
             data.append(future.result())
     marker_list_2 = ['Mean_' + marker for marker in marker_list]
