@@ -1,17 +1,10 @@
 import numpy as np
 import tifffile as tiff
 import cv2
-import os
 
 class AF_Removal_Set_06:
     def __init__(self):
-        self.metadata_cy2 = self.load_metadata_cy2()
-        self.metadata_cy3 = self.load_metadata_cy3()
-        self.metadata_cy5 = self.load_metadata_cy5()
-        self.marker_round = self.generate_marker_rounds()
-        
-    def load_metadata_cy2(self):
-        return [
+        self.metadata_cy2 = [
             {'ROUND_ID': '00','Marker':'AF','ms':200},
             {'ROUND_ID': '01','Marker':'EMPTY','ms':200},
             {'ROUND_ID': '02','Marker':'BACKGROUND','ms':175},
@@ -31,11 +24,10 @@ class AF_Removal_Set_06:
             {'ROUND_ID': '16','Marker':'BACKGROUND','ms':150},
             {'ROUND_ID': '17','Marker':'LYSOZYME','ms':300},
             {'ROUND_ID': '18','Marker':'BACKGROUND','ms':300},
-            {'ROUND_ID': '19','Marker':'PEGFR','ms':330},
+            {'ROUND_ID': '19','Marker':'PEGFR','ms':330}
         ]
-    
-    def load_metadata_cy3(self):
-        return [
+
+        self.metadata_cy3 = [
             {'ROUND_ID': '00','Marker':'AF','ms':80},
             {'ROUND_ID': '01','Marker':'COLLAGEN','ms':12},
             {'ROUND_ID': '02','Marker':'BACKGROUND','ms':12},
@@ -55,11 +47,10 @@ class AF_Removal_Set_06:
             {'ROUND_ID': '16','Marker':'BACKGROUND','ms':15},
             {'ROUND_ID': '17','Marker':'SOX9','ms':135},
             {'ROUND_ID': '18','Marker':'BACKGROUND','ms':135},
-            {'ROUND_ID': '19','Marker':'EMPTY','ms':135},
+            {'ROUND_ID': '19','Marker':'EMPTY','ms':135}
         ]
-    
-    def load_metadata_cy5(self):
-        return [
+
+        self.metadata_cy5 = [
             {'ROUND_ID': '00','Marker':'AF','ms':1000},
             {'ROUND_ID': '01','Marker':'CD45','ms':500},
             {'ROUND_ID': '02','Marker':'BACKGROUND','ms':500},
@@ -79,13 +70,13 @@ class AF_Removal_Set_06:
             {'ROUND_ID': '16','Marker':'BACKGROUND','ms':1500},
             {'ROUND_ID': '17','Marker':'ERBB2','ms':2000},
             {'ROUND_ID': '18','Marker':'BACKGROUND','ms':2000},
-            {'ROUND_ID': '19','Marker':'ACTG1','ms':1000},
+            {'ROUND_ID': '19','Marker':'ACTG1','ms':1000}
         ]
-    
-    def generate_marker_rounds(self):
-        return [f"{i:02d}" for i in range(20)]
+        
+        self.marker_round = ['%02d' % i for i in range(20)]
 
-    def histogram_normalization(self, img_bg, img_marker):
+    @staticmethod
+    def histogram_normalization(img_bg, img_marker):
         hist1, _ = np.histogram(img_bg.flatten(), 256, [0, 256])
         hist2, _ = np.histogram(img_marker.flatten(), 256, [0, 256])
 
@@ -113,25 +104,26 @@ class AF_Removal_Set_06:
         return af_removed_image
 
     def process_sample(self, sample_id, marker_path, marker_tmp_result_path):
-        if not os.path.exists(marker_tmp_result_path):
-            os.mkdir(marker_tmp_result_path)
-        
-        AF_ROUND_SET06 = '00'
-        af_cy2_image = tiff.imread(f'{marker_path}/{sample_id}_AF_CY2_{self.metadata_cy2[0]["ms"]}ms_ROUND_{AF_ROUND_SET06}.tif')
-        af_cy3_image = tiff.imread(f'{marker_path}/{sample_id}_AF_CY3_{self.metadata_cy3[0]["ms"]}ms_ROUND_{AF_ROUND_SET06}.tif')
-        af_cy5_image = tiff.imread(f'{marker_path}/{sample_id}_AF_CY5_{self.metadata_cy5[0]["ms"]}ms_ROUND_{AF_ROUND_SET06}.tif')
+        af_cy2_exposure = self.metadata_cy2[0]['ms']
+        af_cy2_image = tiff.imread(f'{marker_path}/{sample_id}_AF_CY2_{af_cy2_exposure}ms_ROUND_00.tif')
+
+        af_cy3_exposure = self.metadata_cy3[0]['ms']
+        af_cy3_image = tiff.imread(f'{marker_path}/{sample_id}_AF_CY3_{af_cy3_exposure}ms_ROUND_00.tif')
+
+        af_cy5_exposure = self.metadata_cy5[0]['ms']
+        af_cy5_image = tiff.imread(f'{marker_path}/{sample_id}_AF_CY5_{af_cy5_exposure}ms_ROUND_00.tif')
 
         for cur_round_id in range(1, 20, 2):
             cur_round_name = self.marker_round[cur_round_id]
 
             cur_cy2_exposure = self.metadata_cy2[cur_round_id]['ms']
             cur_cy2_marker = self.metadata_cy2[cur_round_id]['Marker']
-            if int(cur_round_id) not in [1, 7, 13]:
+            if cur_round_id not in [1, 7, 13]:
                 cur_cy2_image = tiff.imread(f'{marker_path}/{sample_id}_{cur_cy2_marker}_CY2_{cur_cy2_exposure}ms_ROUND_{cur_round_name}.tif')
             else:
                 cur_cy2_image = af_cy2_image
 
-            if int(cur_round_id) not in [11, 19]:
+            if cur_round_id not in [11, 19]:
                 cur_cy3_exposure = self.metadata_cy3[cur_round_id]['ms']
                 cur_cy3_marker = self.metadata_cy3[cur_round_id]['Marker']
                 cur_cy3_image = tiff.imread(f'{marker_path}/{sample_id}_{cur_cy3_marker}_CY3_{cur_cy3_exposure}ms_ROUND_{cur_round_name}.tif')
@@ -140,7 +132,7 @@ class AF_Removal_Set_06:
 
             cur_cy5_exposure = self.metadata_cy5[cur_round_id]['ms']
             cur_cy5_marker = self.metadata_cy5[cur_round_id]['Marker']
-            if int(cur_round_id) not in [13]:
+            if cur_round_id not in [13]:
                 cur_cy5_image = tiff.imread(f'{marker_path}/{sample_id}_{cur_cy5_marker}_CY5_{cur_cy5_exposure}ms_ROUND_{cur_round_name}.tif')
             else:
                 cur_cy5_image = af_cy5_image
@@ -152,9 +144,18 @@ class AF_Removal_Set_06:
             else:
                 bg_round_id = cur_round_id - 1
                 bg_round_name = self.marker_round[bg_round_id]
-                bg_cy2_image = tiff.imread(f'{marker_path}/{sample_id}_BACKGROUND_CY2_{self.metadata_cy2[bg_round_id]["ms"]}ms_ROUND_{bg_round_name}.tif')
-                bg_cy3_image = tiff.imread(f'{marker_path}/{sample_id}_BACKGROUND_CY3_{self.metadata_cy3[bg_round_id]["ms"]}ms_ROUND_{bg_round_name}.tif')
-                bg_cy5_image = tiff.imread(f'{marker_path}/{sample_id}_BACKGROUND_CY5_{self.metadata_cy5[bg_round_id]["ms"]}ms_ROUND_{bg_round_name}.tif')
+
+                if bg_round_id != 8:
+                    bg_cy2_exposure = self.metadata_cy2[bg_round_id]['ms']
+                    bg_cy2_image = tiff.imread(f'{marker_path}/{sample_id}_BACKGROUND_CY2_{bg_cy2_exposure}ms_ROUND_{bg_round_name}.tif')
+                else:
+                    bg_cy2_image = af_cy2_image
+
+                bg_cy3_exposure = self.metadata_cy3[bg_round_id]['ms']
+                bg_cy3_image = tiff.imread(f'{marker_path}/{sample_id}_BACKGROUND_CY3_{bg_cy3_exposure}ms_ROUND_{bg_round_name}.tif')
+
+                bg_cy5_exposure = self.metadata_cy5[bg_round_id]['ms']
+                bg_cy5_image = tiff.imread(f'{marker_path}/{sample_id}_BACKGROUND_CY5_{bg_cy5_exposure}ms_ROUND_{bg_round_name}.tif')
 
                 cur_cy2_image_normalized_corrected = self.histogram_normalization(bg_cy2_image, cur_cy2_image)
                 cur_cy3_image_normalized_corrected = self.histogram_normalization(bg_cy3_image, cur_cy3_image)
@@ -164,4 +165,6 @@ class AF_Removal_Set_06:
             tiff.imwrite(f'{marker_tmp_result_path}/ROUND_{cur_round_name}_CY3_{sample_id}_{cur_cy3_marker}_normalized_corrected.tif', cur_cy3_image_normalized_corrected)
             tiff.imwrite(f'{marker_tmp_result_path}/ROUND_{cur_round_name}_CY5_{sample_id}_{cur_cy5_marker}_normalized_corrected.tif', cur_cy5_image_normalized_corrected)
 
-
+# Example usage:
+# af_removal_object = AF_Removal_Set_06()
+# af_removal_object.process_sample(sample_id='GCA112TIA', marker_path='/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA112TIA', marker_tmp_result_path='/home-local/rudravg/trial')
