@@ -18,7 +18,7 @@ args = parser.parse_args()
 tissue_name = args.tissue
 
 
-marker_list = ['CD11B','CD20','CD3d','CD45','CD4','CD68','CD8','CgA','Lysozyme','NaKATPase','PanCK','SMA','Sox9','Vimentin','OLFM4','Muc2']
+marker_list = ['CD11B','CD20','CD3D','CD45','CD4','CD68','CD8','CGA','LYSOZYME','NAKATPASE','PANCK','SMA','SOX9','VIMENTIN','OLFM4','MUC2']
 
 image_dir_registered=f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/{tissue_name}/AF_Removed'
 print(f'Registered image dir {image_dir_registered}')
