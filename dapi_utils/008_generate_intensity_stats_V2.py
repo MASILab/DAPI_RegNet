@@ -46,14 +46,6 @@ def process_instance(instance, preloaded_images):
     # Create a mask for the current instance
     instance_mask = mask_np == instance
 
-    # Calculate the centroid of the current instance
-    y_indices, x_indices = np.where(instance_mask)
-    centroid_x = np.mean(x_indices)
-    centroid_y = np.mean(y_indices)
-
-    # Append the centroid to the row
-    row.extend([centroid_x, centroid_y])
-
     # Loop over each marker
     for marker, image_np in preloaded_images.items():
         # Get the pixels of the current instance
@@ -93,8 +85,8 @@ for dir_name, dir_path in dirs.items():
     #Initialize a list to hold the data
     data = []
 
-    # Create a ThreadPoolExecutor
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    # Create a ThreadPoolExecutor with 30 cores
+    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
         # Use the executor to map the process_instance function to the unique_instances
         # Pass preloaded_images to each function call
         tasks = [executor.submit(process_instance, instance, preloaded_images) for instance in unique_instances]
