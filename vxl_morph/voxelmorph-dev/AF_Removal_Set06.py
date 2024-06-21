@@ -164,7 +164,3 @@ class AF_Removal_Set_06:
             tiff.imwrite(f'{marker_tmp_result_path}/ROUND_{cur_round_name}_CY2_{sample_id}_{cur_cy2_marker}_normalized_corrected.tif', cur_cy2_image_normalized_corrected)
             tiff.imwrite(f'{marker_tmp_result_path}/ROUND_{cur_round_name}_CY3_{sample_id}_{cur_cy3_marker}_normalized_corrected.tif', cur_cy3_image_normalized_corrected)
             tiff.imwrite(f'{marker_tmp_result_path}/ROUND_{cur_round_name}_CY5_{sample_id}_{cur_cy5_marker}_normalized_corrected.tif', cur_cy5_image_normalized_corrected)
-
-# Example usage:
-# af_removal_object = AF_Removal_Set_06()
-# af_removal_object.process_sample(sample_id='GCA112TIA', marker_path='/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA112TIA', marker_tmp_result_path='/home-local/rudravg/trial')

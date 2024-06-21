@@ -4,6 +4,11 @@ import numpy as np
 import os
 import random
 import matplotlib.pyplot as plt
+import cv2
+from skimage import segmentation
+
+
+Image.MAX_IMAGE_PIXELS = None
 
 unregistered_csv='GCA020TIB_unregistered_classified.csv'
 registered_csv='GCA020TIB_registered_classified.csv'
@@ -14,7 +19,7 @@ registered_df=pd.read_csv(registered_csv)
 class_labels = [col for col in registered_df.columns if col.startswith("final_")]
 
 analysis_df = pd.DataFrame({
-    'Instance': unregistered_df['Instances'],  # Assuming 'Instances' is the column name in your CSV
+    'Instance': unregistered_df['Instances'],  # Assuming '' is the coInstanceslumn name in your CSV
     'Gain': False,
     'Loss': False,
     'Change': False,
@@ -42,28 +47,29 @@ for index, (reg_row, unreg_row) in enumerate(zip(registered_df.iterrows(), unreg
     elif unreg_classes and reg_classes and before_classification != after_classification:
         analysis_df.at[index, 'Change'] = True
 
-indexes_gained=analysis_df[(analysis_df['Before Classification']=='Undefined') & (analysis_df['After Classification']=='final_Enterocytes')].index
+indexes_gained=analysis_df[(analysis_df['Before Classification']=='Undefined') & (analysis_df['After Classification']=='final_Progenitor')].index
 
 #Losses for Enteroendocrine
-indexes_lost=analysis_df[(analysis_df['Before Classification']=='final_Enterocytes') & (analysis_df['After Classification']=='Undefined')].index
+indexes_lost=analysis_df[(analysis_df['Before Classification']=='final_Progenitor') & (analysis_df['After Classification']=='Undefined')].index
 
 #Changes for Enteroendocrine
-indexes_changed=analysis_df[(analysis_df['Before Classification']=='final_Enterocytes') & (analysis_df['After Classification']!='final_Enterocytes') & (analysis_df['After Classification']!='Undefined')].index
+indexes_changed=analysis_df[(analysis_df['Before Classification']=='final_Progenitor') & (analysis_df['After Classification']!='final_Progenitor') & (analysis_df['After Classification']!='Undefined')].index
 
-tissue_name='GCA007ACB'
-
+tissue_name='GCA033TIB_TISSUE02'
+#GCA020TIB_TISSUE03 for Fibroblast and Enterocytes
 mask_path=f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/{tissue_name}/mask.tif'
 mask=np.array(Image.open(mask_path))
 
 
-marker_list = ['CD11B','CD20','CD3D','CD45','CD4','CD68','CD8','CGA','LYSOZYME','NAKATPASE','PANCK','SMA','SOX9','VIMENTIN','OLFM4','MUC2']
+marker_list = ['CD11B','CD20','CD3D','CD45','CD4','CD68','CD8','CGA','LYSOZYME','NAKATPASE','PANCK','SMA','SOX9','VIMENTIN','OLFM4']
 
 registered_marker_path=f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/{tissue_name}/AF_Removed/'
 unregistered_marker_path=f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/{tissue_name}/Unregistered/AF_Removed/'
 
 #Find all file names in registered marker_path which have the marker name from the marker list, compare it after capitalizing the file paths
-registered_marker_files = [file for file in os.listdir(registered_marker_path) if any(marker.upper() in file.upper() for marker in marker_list)]
-
+registered_marker_files = [file for file in os.listdir(registered_marker_path) 
+                        if any(marker.upper() in file.upper() for marker in marker_list) 
+                        and "BAD" not in file.upper()]
 #Sort it based on the marker list
 registered_marker_files = sorted(registered_marker_files, key=lambda x: [marker.upper() in x.upper() for marker in marker_list], reverse=True)
 
@@ -155,66 +161,105 @@ OLFM4_registered=os.path.join(registered_marker_path,registered_marker_files[14]
 OLFM4_registered=np.uint8(np.array(Image.open(OLFM4_registered)))
 
 OLFM4_unregistered=os.path.join(unregistered_marker_path,registered_marker_files[14])
-OLFM4_unregistered=np.uint8(np.array(Image.open(OLFM4_unregistered))    )                        
-                        
-
-def crop_and_overlay(mask, registered, unregistered, centroid, crop_size=40):
-    # Calculate crop boundaries
-    start_row = int(centroid[0] - crop_size / 2)
-    end_row = int(centroid[0] + crop_size / 2)
-    start_col = int(centroid[1] - crop_size / 2)
-    end_col = int(centroid[1] + crop_size / 2)
-    
-    # Crop images
-    crop_mask = mask[start_row:end_row, start_col:end_col]
-    crop_reg = registered[start_row:end_row, start_col:end_col]
-    crop_unreg = unregistered[start_row:end_row, start_col:end_col]
-    
-    # Normalize and clip images to be in the range [0, 1]
-    crop_reg = (crop_reg - crop_reg.min()) / (crop_reg.max() - crop_reg.min())
-    crop_unreg = (crop_unreg - crop_unreg.min()) / (crop_unreg.max() - crop_unreg.min())
-    crop_mask = np.clip(crop_mask, 0, 1)  # This is typically already binary (0 or 1)
-    
-    # Create overlays
-    overlay_reg = np.zeros((crop_mask.shape[0], crop_mask.shape[1], 3), dtype=np.float32)
-    overlay_reg[:, :, 0] = crop_reg  # Red channel
-    overlay_reg[:, :, 2] = crop_mask  # Blue channel
-    
-    overlay_unreg = np.zeros((crop_mask.shape[0], crop_mask.shape[1], 3), dtype=np.float32)
-    overlay_unreg[:, :, 0] = crop_unreg  # Red channel
-    overlay_unreg[:, :, 2] = crop_mask  # Blue channel
-    
-    return overlay_reg, overlay_unreg
-
-
-for index in indexes_gained:
-    instance_mask = mask == index-1
-    # Assuming 'mask' and 'random_index' are defined
-    centroid = np.mean(np.argwhere(instance_mask), axis=0)
-
-    # List of registered and unregistered image variables
-    registered_images = [CD11B_registered, CD20_registered, CD3D_registered, CD45_registered, CD4_registered,
-                        CD68_registered, CD8_registered, CGA_registered, LYSOZYME_registered, NAKATPASE_registered,
-                        PANCK_registered, SMA_registered, SOX9_registered, VIMENTIN_registered, OLFM4_registered]
-
-    unregistered_images = [CD11B_unregistered, CD20_unregistered, CD3D_unregistered, CD45_unregistered, CD4_unregistered,
-                        CD68_unregistered, CD8_unregistered, CGA_unregistered, LYSOZYME_unregistered, NAKATPASE_unregistered,
-                        PANCK_unregistered, SMA_unregistered, SOX9_unregistered, VIMENTIN_unregistered, OLFM4_unregistered]
-
-    # Plotting
-    fig, axs = plt.subplots(len(registered_images), 2, figsize=(10, 5 * len(registered_images)))
-    for i, (reg_img, unreg_img) in enumerate(zip(registered_images, unregistered_images)):
-        overlay_reg, overlay_unreg = crop_and_overlay(instance_mask, reg_img, unreg_img, centroid)
+OLFM4_unregistered=np.uint8(np.array(Image.open(OLFM4_unregistered)))                        
         
-        # Display the overlays with marker-specific titles
-        axs[i, 0].imshow(overlay_reg)
-        axs[i, 0].set_title(f'Registered {marker_list[i]}')
-        axs[i, 1].imshow(overlay_unreg)
-        axs[i, 1].set_title(f'Unregistered {marker_list[i]}')
-    print(index)
-    #Also print the unregistered and registered classes for that row
-    print(registered_df.loc[index-1])
-    print(unregistered_df.loc[index-1])
+# List of registered and unregistered image variables
+registered_images = [CD11B_registered, CD20_registered, CD3D_registered, CD45_registered, CD4_registered,
+                CD68_registered, CD8_registered, CGA_registered, LYSOZYME_registered, NAKATPASE_registered,
+                PANCK_registered, SMA_registered, SOX9_registered, VIMENTIN_registered, OLFM4_registered]
 
-    plt.tight_layout()
-    plt.show()
+unregistered_images = [CD11B_unregistered, CD20_unregistered, CD3D_unregistered, CD45_unregistered, CD4_unregistered,
+                CD68_unregistered, CD8_unregistered, CGA_unregistered, LYSOZYME_unregistered, NAKATPASE_unregistered,
+                PANCK_unregistered, SMA_unregistered, SOX9_unregistered, VIMENTIN_unregistered, OLFM4_unregistered]
+
+def blend_images(mask, instance, image):
+    # Get the instance in the mask
+    mask_instance = np.zeros_like(mask)
+    mask_instance[mask == instance] = 1
+
+    # Check if the instance exists in the mask
+    if not np.any(mask_instance):
+        print(f"Instance {instance} not found in the mask.")
+        return None
+
+    # Calculate the centroid of the instance
+    centroid = np.mean(np.argwhere(mask_instance), axis=0)
+
+    # Crop out a square around the centroid
+    crop_size = 50
+    start_x, end_x = int(centroid[0]-crop_size), int(centroid[0]+crop_size)
+    start_y, end_y = int(centroid[1]-crop_size), int(centroid[1]+crop_size)
+
+    # Boundary condition check
+    start_x = max(start_x, 0)
+    start_y = max(start_y, 0)
+    end_x = min(end_x, image.shape[0])
+    end_y = min(end_y, image.shape[1])
+
+    mask_crop = mask[start_x:end_x, start_y:end_y]
+
+    # Find the boundaries in the cropped mask
+    boundaries = segmentation.find_boundaries(mask_crop, mode='inner')
+
+    # Create an RGB image for boundaries
+    boundary_image = np.zeros((mask_crop.shape[0], mask_crop.shape[1], 3), dtype=np.uint8)
+    boundary_image[:, :, 1] = np.where((boundaries) & (mask_crop == instance), 255, 0)
+    boundary_image[:, :, 2] = np.where((boundaries) & (mask_crop != instance) & (mask_crop != 0), 255, 0)
+
+    # Create an RGB image with the cropped marker image in the red channel
+    image_crop = image[start_x:end_x, start_y:end_y]
+    marker_rgb = np.zeros_like(boundary_image)
+    marker_rgb[:, :, 0] = image_crop
+    #Make the Marker RGB image brighter by multiplying it and making sure it stays between 0,255
+    marker_rgb = np.clip(marker_rgb * 30, 0, 255).astype(np.uint8)
+    boundary_image = np.clip(boundary_image * 20, 0, 255).astype(np.uint8)
+
+    # Blend the boundary image and the marker image together using numpy
+    blended_image = 0.5 * boundary_image.astype(float) + 0.5 * marker_rgb.astype(float)
+    blended_image = np.clip(blended_image, 0, 255).astype(np.uint8)
+
+    return blended_image
+
+def display_images_with_boundaries(mask, registered_images, unregistered_images, indexes, marker_list):
+    for index in indexes:
+        instance_mask = mask == index
+        if np.any(instance_mask):
+            # Creating a figure with tightly packed subplots
+            fig, axs = plt.subplots(2, len(marker_list), figsize=(20, 4), gridspec_kw={'height_ratios': [1, 1]})
+            
+            for i, (reg_img, unreg_img) in enumerate(zip(registered_images, unregistered_images)):
+                # Blend images for the current marker
+                blended_unreg = blend_images(mask, index+1, unreg_img)
+                blended_reg = blend_images(mask, index+1, reg_img)
+                
+                # Display unregistered image in the first row
+                if blended_unreg is not None:
+                    axs[0, i].imshow(blended_unreg)
+                    axs[0, i].axis('off')
+                
+                # Display registered image in the second row
+                if blended_reg is not None:
+                    axs[1, i].imshow(blended_reg)
+                    axs[1, i].axis('off')
+
+                # Set column titles on the first row
+                    axs[0, i].set_title(marker_list[i])
+
+            # Add annotations for row labels
+            fig.text(0.01, 0.75, 'Unregistered', va='center', rotation='vertical', fontsize=12)
+            fig.text(0.01, 0.25, 'Registered', va='center', rotation='vertical', fontsize=12)
+
+            print("Registered")
+            print(registered_df.loc[index])  # Assuming registered_df is predefined
+            print("Unregistered")
+            print(unregistered_df.loc[index])  # Assuming unregistered_df is predefined
+
+
+            # Adjust the layout to make the subplots close to each other and ensure the labels are visible
+            plt.subplots_adjust(left=0.05, right=0.99, top=0.95, bottom=0.05, hspace=0.1, wspace=0.1)
+            plt.show()
+
+
+# Example usage with your specific data
+marker_list = ["CD11B", "CD20", "CD3D", "CD45", "CD4", "CD68", "CD8", "CGA", "LYSOZYME", "NAKATPASE", "PANCK", "SMA", "SOX9", "VIMENTIN", "OLFM4"]
+display_images_with_boundaries(mask, registered_images, unregistered_images, indexes_changed, marker_list)

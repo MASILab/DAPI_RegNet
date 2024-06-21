@@ -1,6 +1,21 @@
 import numpy as np
 import cv2
 import tifffile as tiff
+import argparse
+
+
+parser = argparse.ArgumentParser(description='AF Removal for Set01')
+parser.add_argument('sample_id', type=str, help='sample id')
+parser.add_argument('marker_path', type=str, help='Marker path')
+parser.add_argument('results_path', type=str, help='Results path')
+args = parser.parse_args()
+
+sample_id=args.sample_id
+marker_path=args.marker_path
+results_path=args.results_path
+
+sample_id_list = [sample_id]
+
 
 #Define whole sets metadata
 metadata_cy5=[]
@@ -67,7 +82,6 @@ metadata_gfp.append({'ROUND_ID': '17','Marker':'Background','ms':400})
 metadata_gfp.append({'ROUND_ID': '18','Marker':'ACTG1','ms':75})
 
 #sample_id_list = ['GCA002ACB','GCA002TIB','GCA003ACA','GCA003TIB','GCA004TIB','GCA011ACB','GCA011TIB','GCA012ACB','GCA012TIB']
-sample_id_list = ['GCA003ACA']
 
 def histogram_normalization(img_bg, img_marker):
     hist1, _ = np.histogram(img_bg.flatten(), 256, [0, 256])
@@ -122,8 +136,7 @@ for i in range(0,19):
 
 for sample_id in sample_id_list:
     print(sample_id)
-    marker_path = f'/fs5/p_masi/baos1/rudravg/MXIF/MXIF/Helmsley/MxIF/Set01/{sample_id}/Registered'
-    marker_tmp_result_path = f'/fs5/p_masi/baos1/rudravg/MXIF/MXIF/Helmsley/MxIF/Set01/{sample_id}/tmp_new'
+    marker_tmp_result_path = results_path
     # Let's set AF image as reference
     AF_ROUND_SET01 = '01' # hardcoded, can search metadata to get the round id.
     af_gfp_exposure = metadata_gfp[1]['ms']

@@ -116,7 +116,8 @@ for sample_id in sample_id_list:
     else:
         sample_dir = sample_id
 
-    marker_path = f'/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/GCA112TIA'
+    marker_path = f'/fs5/p_masi/baos1/rudravg/MXIF/MXIF/Helmsley/MxIF/Set06/GCA112TIA/Registered'
+
     marker_tmp_result_path = f'/home-local/rudravg/trial'
     # Let's set AF image as reference
     AF_ROUND_SET06 = '00' # hardcoded, can search metadata to get the round id.

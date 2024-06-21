@@ -8,14 +8,18 @@ import os
 #Get the csv files as arguments using argparse
 
 parser = argparse.ArgumentParser(description='Classify cells using GammaGateR')
-parser.add_argument('registered_csv', type=str, help='Path to the registered file')
-parser.add_argument('unregistered_csv', type=str, help='Path to the unregistered file')
+parser.add_argument('tissue_name', type=str, help='Name of the tissue')
+path='/fs5/p_masi/rudravg/MxIF_Vxm_Registered_V2/'
+
 
 args = parser.parse_args()
 
 #Read the csv files
-registered = pd.read_csv(args.registered_csv)
-unregistered = pd.read_csv(args.unregistered_csv)
+tissue_name = args.tissue_name
+registered = f'{path}{tissue_name}/{tissue_name}_post_all_V2_registered.csv'
+registered = pd.read_csv(registered)
+unregistered = f'{path}{tissue_name}/{tissue_name}_post_all_V2_unregistered.csv'
+unregistered = pd.read_csv(unregistered)
 
 #For columns starting from 3 and ending in last column -1 set True if the value is greater than 0.5, False otherwise
 for i in range(0, len(registered.columns)-1):

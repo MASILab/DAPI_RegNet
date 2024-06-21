@@ -19,7 +19,7 @@ unregistered = pd.read_csv(args.unregistered_csv)
 name=args.name
 
 # For columns starting from 3 and ending in last column -1 set True if the value is greater than 0.5, False otherwise
-for i in range(0, len(registered.columns)-1):
+for i in range(0, len(registered.columns)):
     registered[registered.columns[i]] = registered[registered.columns[i]] > 0.5
     unregistered[unregistered.columns[i]] = unregistered[unregistered.columns[i]] > 0.5
 
